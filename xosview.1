@@ -258,6 +258,9 @@ setting xosview*usedlabels to "True".
 .\"  Handle -/+cpu
 .pm cpu
 
+.\" Handle -/+cpufreq
+.pm cpufreq
+
 .\"  Handle -/+load
 .pm load
 
@@ -524,6 +527,93 @@ graph. The first color has an adjusted range of [0.0, 1.0]; the second color
 is (1.0, Base]; the third color is (Base, Base^2]; etc. If the adjusted load
 value exceeds the scale range of the last color, the meter will "peg".
 .RE
+.RE
+
+
+\fBCPU Speed Meter Resources\fP
+
+.xt cpuFreq
+
+.pp cpuFreq
+
+.dc cpuFreq
+
+.dg cpuFreq
+
+.uf cpuFreq
+
+xosview*cpuFreqColorHigh: \fIcolor\fP
+.RS
+Bar color to use when \fIxosview*cpuFreqScaleThresholdHigh\fP is exceeded.
+.RE
+
+xosview*cpuFreqColorMidHigh: \fIcolor\fP
+.RS
+Bar color to use when \fIxosview*cpuFreqScaleThresholdMidHigh\fP is exceeded.
+.RE
+
+xosview*cpuFreqColorMidLow: \fIcolor\fP
+.RS
+Bar color to use when \fIxosview*cpuFreqScaleThresholdMidLow\fP is exceeded.
+.RE
+
+xosview*cpuFreqColorLow: \fIcolor\fP
+.RS
+Bar color to use when none of the thresholds are exceeded.
+.RE
+
+xosview*cpuFreqColorIdle: \fIcolor\fP
+.RS
+Bar color to use for the background.
+.RE
+
+xosview*cpuFreqScaleMax: \fIint\fP
+.RS
+Value to use for the maximum CPU frequency if the system does not provide a
+resonable value or the \fIxosview*cpuFreqScaleOverride\fP resources is true.
+.RE
+
+xosview*cpuFreqScaleMin: \fIint\fP
+.RS
+Value to use for the minimum CPU frequency if the system does not provide a
+resonable value or the \fIxosview*cpuFreqScaleOverride\fP resources is true.
+.RE
+
+xosview*cpuFreqUsedMax: \fIint\fP
+.RS
+Value to use for the maximum CPU frequency in the percentage calculation of
+the used label.
+.RE
+
+xosview*cpuFreqScaleRelative: (True or False)
+.RS
+Setting this to True makes the bar length relative to the CPU minimum
+frequency instead of 0.
+.RE
+
+xosview*cpuFreqScaleOverride: (True or False)
+.RS
+Setting this will force the use of the values provided by the
+\fIxosview*cpuFreqScaleMax\fP and \fIxosview*cpuFreqScaleMin\fP resources
+instead of the system provided values.
+.RE
+
+xosview*cpuFreqScaleThresholdHigh: \fIfloat\fP
+.RS
+The value relative to the maximum CPU frequency at which the bar should start
+using the color specified by the \fIxosview*cpuFreqColorHigh\fP resource.
+.RE
+
+xosview*cpuFreqScaleThresholdMidHigh: \fIfloat\fP
+.RS
+The value relative to the maximum CPU frequency at which the bar should start
+using the color specified by the \fIxosview*cpuFreqColorMidHigh\fP resource.
+.RE
+
+xosview*cpuFreqScaleThresholdMidLow: \fIfloat\fP
+.RS
+The value relative to the maximum CPU frequency at which the bar should start
+using the color specified by the \fIxosview*cpuFreqColorMidLow\fP resource.
 .RE
 
 
@@ -1539,6 +1629,7 @@ Temperature sensor, and FreeBSD updates.
 Raymond S Brand (rsbx@acm.org)
 .RS
 Linux load meter rewite for predictable scale behaviors.
+Linux CPU frequency meter.
 Linux wireless meter rewrite to provide more informative graphs.
 Misc fixes.
 .RE

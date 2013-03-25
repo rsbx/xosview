@@ -23,7 +23,7 @@
 
 ! OS type specific metric order lists
 
-*linux.metrics:      load cpu mem disk wireless RAID swap page net \
+*linux.metrics:      load cpuFreq cpu mem disk wireless RAID swap page net \
                      NFSDStat NFSStat serial int battery coretemp lmstemp acpitemp
 
 ! Load Meter Resources
@@ -76,6 +76,25 @@
 *cpuGraph:            True
 *cpuUsedFormat:       percent
 *cpuFormat:           auto   ! single, all, auto or both
+
+! CPU Frequency Meter Resources
+
+*linux.cpuFreq.enable:                    True
+*linux.cpuFreq*enable:                    True
+*linux.cpuFreq*priority:                  2
+*linux.cpuFreq*decay:                     True
+*linux.cpuFreq*graph:                     False
+*linux.cpuFreq*usedFormat:                percent
+*linux.cpuFreq*color.high:                red
+*linux.cpuFreq*color.midHigh:             yellow
+*linux.cpuFreq*color.midLow:              green
+*linux.cpuFreq*color.low:                 blue
+*linux.cpuFreq*color.idle:                aquamarine
+*linux.cpuFreq*scale.max:                 auto
+*linux.cpuFreq*scale.min:                 auto
+*linux.cpuFreq*scale.threshold.high:      0.75
+*linux.cpuFreq*scale.threshold.midHigh:   0.55
+*linux.cpuFreq*scale.threshold.midLow:    0.30
 
 ! Memory Meter Resources
 ! Not all of these are used by a specific platform.

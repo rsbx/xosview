@@ -8,6 +8,7 @@
 #include "xosview.h"
 
 #include "cpumeter.h"
+#include "cpufreqmeter.h"
 #include "memmeter.h"
 #include "swapmeter.h"
 #include "pagemeter.h"
@@ -45,6 +46,7 @@ struct metermaker
 struct metermaker makertable[] =
 	{
 	{"load",	false,	&LoadMeter::makeMeters},
+	{"cpuFreq",	false,	&CPUFreqMeter::makeMeters},
 	{"cpu",		false,	&CPUMeter::makeMeters},
 	{"mem",		false,	&MemMeter::makeMeters},
 	{"disk",	false,	&DiskMeter::makeMeters},

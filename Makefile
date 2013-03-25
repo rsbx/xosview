@@ -40,6 +40,7 @@ ifeq ($(PLATFORM), linux)
 OBJS += linux/MeterMaker.o \
 	linux/btrymeter.o \
 	linux/cpumeter.o \
+	linux/cpufreqmeter.o \
 	linux/diskmeter.o \
 	linux/intmeter.o \
 	linux/lmstemp.o \
