@@ -451,61 +451,69 @@ graph columns. This is only used by meters which have graph mode enabled.
 
 \fBLoad Meter Resources\fP
 
-.\"  Do the load: True resource.
 .xt load
 
-xosview*loadProcColor: \fIcolor\fP
-.RS
-This is the color that the load meter will use to display the load average
-when it is below the warning threshold.
-.RE
+.pp load
 
-xosview*loadWarnColor: \fIcolor\fP
-.RS
-This is the color that the load meter will use once the load average is
-above the warning but below the critical load threshold.
-.RE
+.dc load
 
-xosview*loadCritColor: \fIcolor\fP
+.dg load
+
+.uf load
+
+xosview*loadCpuSpeed:   (True or False)
 .RS
-This is the color that the load meter will use once the load average is
-above critical load threshold.
+Display the current CPU speed in the load meter.
 .RE
 
 .\"  loadIdleColor
 .cc load Idle idle
 
-.\"  Do the priority resource
-.pp load
-
-xosview*loadWarnThreshold: \fIint\fP
+xosview*loadColorList: \fIcolor list\fP
 .RS
-This number (which must be an integer >= 1) sets the value at which
-the loadmeter changes its status and color from "normal" to "warning".
-The default value is the number of processors.
+List of colors to be used for the load value color. Colors earlier in the list
+are used to display lower load values than colors later in the list.
 .RE
 
-xosview*loadCritThreshold: \fIint\fP
+xosview*loadScalingAdjust: Auto or \fIfloat\fP
 .RS
-This number (which must be an integer >= 1) sets the value at which
-the loadmeter changes its status and color from "warning" to "critical".
-The default value is four times the warning threshold.
+The system suppiled load average is adjusted by dividing by this value before
+the graph is drawn. If it is set to "auto", the number of CPUs is used. If the
+value is less than 0.0, the system supplied load average is adjusted by dividing
+by the negative of this value time the CPU count.
+Default is "Auto".
 .RE
 
-xosview*loadDecay: (True or False)
+xosview*loadScalingBase: \fIfloat\fP
 .RS
-You should probably leave this at the default value (False).  The load
-is already a time-averaged value!
+The "base" for the exponential multiplier. It must be greater than 1.0; 2.0
+is good choice.
+Default is 4 to match the color behavior of older versions.
 .RE
 
-.dg load
-
-.\"  loadUsedFormat resource
-.uf load
-
-xosview*loadCpuSpeed: (True or False)
+xosview*loadScalingBehavior: \fIbehavior\fP
 .RS
-Display the current CPU speed in the load meter.
+This determines how the Load Meter displays the load value.
+Default is "traditional".
+
+\fBTraditional\fP
+.RS
+This behavior is similar to that of older versions of \fIxosview\fP. The color
+of the load value color indicates the adjusted scale range of the graph. The
+first color has an adjusted range of [0.0, 1.0]; the second color is
+[0, Base]; the third color is [0, Base^2]; etc. If the adjusted load value
+exceeds the scale range of the last color, the meter will "peg".
+.RE
+
+\fBOverlay\fP
+.RS
+With this behavior, the graphed load value appears to grow from the low end
+of the scale as the displayed load increases; overlaying the previous display.
+The color of the load value color indicates the adjusted scale range of the
+graph. The first color has an adjusted range of [0.0, 1.0]; the second color
+is (1.0, Base]; the third color is (Base, Base^2]; etc. If the adjusted load
+value exceeds the scale range of the last color, the meter will "peg".
+.RE
 .RE
 
 
@@ -1463,6 +1471,7 @@ Temperature sensor, and FreeBSD updates.
 
 Raymond S Brand (rsbx@acm.org)
 .RS
+Linux load meter rewite for predictable scale behaviors.
 Misc fixes.
 .RE
 

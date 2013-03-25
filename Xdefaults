@@ -19,20 +19,21 @@ xosview*samplesPerSec:      10
 xosview*graphNumCols:       135   ! number of samples shown in a graph
 
 ! Load Meter Resources
-! We don't need to enable the Decay option, as it is already time-averaged.
 
-xosview*load:               True
-xosview*loadCritColor:      red
-xosview*loadWarnColor:      orange
-xosview*loadProcColor:      seagreen
-xosview*loadIdleColor:      aquamarine
-xosview*loadPriority:       20
-xosview*loadCritThreshold:  auto  ! auto or number
-xosview*loadWarnThreshold:  auto  ! auto or number
-xosview*loadDecay:          False
-xosview*loadGraph:          False
-xosview*loadUsedFormat:     float
-xosview*loadCpuSpeed:       True
+xosview*load:                True
+xosview*loadPriority:        10
+xosview*loadGraph:           False
+xosview*loadDecay:           False
+xosview*loadUsedFormat:      float
+xosview*loadCpuSpeed:        True
+xosview*loadIdleColor:       aquamarine
+xosview*loadColorList:       seagreen orange red
+! xosview*loadColorList:     blue4 green3 yellow orange red magenta
+xosview*loadScalingAdjust:   auto  ! auto or number
+xosview*loadScalingBase:     4
+xosview*loadScalingBehavior: traditional      ! traditional or overlay
+! useful for testing
+! xosview*loadFileName:        /tmp/load
 
 ! Gfx Meter Resources ( Irix )
 
