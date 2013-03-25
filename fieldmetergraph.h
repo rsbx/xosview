@@ -27,7 +27,8 @@ public:
   virtual void checkResources( void );
 
 protected:
-  void setNumCols( int n );
+  virtual void setNumCols( int n );
+  virtual void setNumFields(int n);
 
   int useGraph_;
   int graphNumCols_;
@@ -36,6 +37,7 @@ protected:
    *  variables after the heightfield_ below, otherwise they get
    *  corrupted???  */
   double *heightfield_;
+
 private:
   void drawBar( int i );
   enum XOSView::windowVisibilityState lastWinState;

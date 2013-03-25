@@ -29,10 +29,14 @@ public:
   virtual void drawfields( int manditory = 0 );
 
 protected:
+  virtual void setNumFields(int n);
+  virtual void setNumDecayFields(void);
+
   int dodecay_;
   int firsttime_;  //  Used to set up decaying fields right the first time.
   double *decay_;
   double *lastDecayval_;
+
 private:
 };
 

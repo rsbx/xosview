@@ -49,6 +49,19 @@ FieldMeterDecay::~FieldMeterDecay( void ){
   delete[] lastDecayval_;
 }
 
+void FieldMeterDecay::setNumDecayFields(void) {
+  delete[] decay_;
+  delete[] lastDecayval_;
+
+  decay_ = new double[numfields_];
+  lastDecayval_ = new double[numfields_];
+}
+
+void FieldMeterDecay::setNumFields(int n) {
+  FieldMeter::setNumFields(n);
+  FieldMeterDecay::setNumDecayFields();
+}
+
 void FieldMeterDecay::drawfields( int manditory ){
   int twidth, x = x_;
   int decay_changed = 0;

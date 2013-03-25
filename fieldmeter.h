@@ -53,7 +53,7 @@ protected:
   void drawused( int manditory );
   bool checkX(int x, int width) const;
 
-  void setNumFields(int n);
+  virtual void setNumFields(int n);
 
 
 private:

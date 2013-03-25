@@ -205,5 +205,12 @@ void FieldMeterGraph::setNumCols( int n )
 	if( heightfield_ )
 		delete [] heightfield_;
 	heightfield_ = NULL;
+}
 
+
+void FieldMeterGraph::setNumFields(int n)
+{
+	FieldMeterDecay::setNumFields(n);
+	delete [] heightfield_;
+	heightfield_ = NULL;
 }
