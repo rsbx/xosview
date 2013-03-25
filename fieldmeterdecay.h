@@ -26,11 +26,10 @@ public:
               int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
   virtual ~FieldMeterDecay( void );
 
-  virtual void drawfields( int manditory = 0 );
-
 protected:
   virtual void setNumFields(int n);
   virtual void setNumDecayFields(void);
+  virtual void drawfields( int manditory = 0 );
 
   int dodecay_;
   int firsttime_;  //  Used to set up decaying fields right the first time.
@@ -38,6 +37,7 @@ protected:
   int *last_f_start, *last_d_start, *last_f_end, *last_d_end;
 
 private:
+
 };
 
 #endif

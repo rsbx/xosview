@@ -36,7 +36,6 @@ void DiskMeter::checkResources( void )
 void DiskMeter::checkevent( void )
 {
     getdiskinfo();
-    drawfields();
 }
 
 void DiskMeter::getdiskinfo( void )

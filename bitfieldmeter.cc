@@ -163,6 +163,11 @@ void BitFieldMeter::draw( void ){
   drawfields( 1 );
 }
 
+void BitFieldMeter::update( void ) {
+  drawBits(0);
+  drawfields(0);
+}
+
 void BitFieldMeter::drawfieldlegend( void ){
   char *tmp1, *tmp2, buff[100];
   int n, x = x_ + width_/2 + 4;
@@ -319,11 +324,6 @@ void BitFieldMeter::drawfields( int manditory ){
     }
     x += twidth;
   }
-}
-
-void BitFieldMeter::checkevent( void ){
-    drawBits();
-    drawfields();
 }
 
 void BitFieldMeter::setBits(int startbit, unsigned char values){

@@ -129,9 +129,8 @@ void NFSDStats::checkevent(void)
         setUsed(fields_[0] + fields_[1] + fields_[2], total_);
 
     starttimer();
-    drawfields();
 
-	_lastNetCnt = MAX(netcnt, calls);
+    _lastNetCnt = MAX(netcnt, calls);
     _lastTcp = nettcpcnt;
     _lastUdp = netudpcnt;
     _lastBad = badcalls;
@@ -211,7 +210,6 @@ void NFSStats::checkevent(void)
         setUsed(fields_[0] + fields_[1] + fields_[2], total_);
 
     starttimer();
-    drawfields();
 
 	_lastcalls = calls;
 	_lastretrns = retrns;

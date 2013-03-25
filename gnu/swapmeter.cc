@@ -40,7 +40,6 @@ void SwapMeter::checkResources( void ){
 
 void SwapMeter::checkevent( void ){
   getswapinfo();
-  drawfields();
 }
 
 

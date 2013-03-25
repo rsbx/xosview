@@ -114,7 +114,6 @@ void NetMeter::checkevent( void ){
      *  the manipulations (* t) above.  */
   setUsed (fields_[0]+fields_[1], total_);
   IntervalTimerStart();
-  drawfields();
 }
 
 void NetMeter::adjust(void){

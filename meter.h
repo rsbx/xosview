@@ -22,6 +22,7 @@ public:
   void resize( int x, int y, int width, int height );
   virtual void checkevent( void ) = 0;
   virtual void draw( void ) = 0;
+  virtual void update( void ) = 0;
   void title( const char *title );
   const char *title( void ) { return title_; }
   void legend( const char *legend );
@@ -29,15 +30,13 @@ public:
   void docaptions( int val ) { docaptions_ = val; }
   void dolegends( int val ) { dolegends_ = val; }
   void dousedlegends( int val ) { dousedlegends_ = val; }
-  int requestevent( void ){
+  bool requestevent( unsigned long counter ){
     if (priority_ == 0) {
       fprintf(stderr, "Warning:  meter %s had an invalid priority "
 	      "of 0.  Resetting to 1...\n", name());
       priority_ = 1;
     }
-    int rval = counter_ % priority_;
-    counter_ = (counter_ + 1) % priority_;
-    return !rval;
+    return (counter % priority_) == 0;
   }
 
   int getX() const { return x_; }
@@ -50,7 +49,7 @@ public:
 protected:
   XOSView *parent_;
   int x_, y_, width_, height_, docaptions_, dolegends_, dousedlegends_;
-  int priority_, counter_;
+  unsigned int priority_;
   char *title_, *legend_;
   unsigned long textcolor_;
   double samplesPerSecond() { return 1.0*MAX_SAMPLES_PER_SECOND/priority_; }

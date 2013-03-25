@@ -40,7 +40,6 @@ void CoreTemp::checkResources( void ) {
 
 void CoreTemp::checkevent( void ) {
 	getcoretemp();
-	drawfields();
 }
 
 void CoreTemp::getcoretemp( void ) {

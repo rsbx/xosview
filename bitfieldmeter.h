@@ -19,9 +19,6 @@ public:
 	      int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
   virtual ~BitFieldMeter( void );
 
-  virtual void drawfields( int manditory = 0 );
-  void drawBits( int manditory = 0 );
-
   void setfieldcolor( int field, const char *color );
   void setfieldcolor( int field, unsigned long color);
   void docaptions( int val ) { docaptions_ = val; }
@@ -33,7 +30,7 @@ public:
   void setBits(int startbit, unsigned char values);
 
   void draw( void );
-  void checkevent( void );
+  virtual void update( void );
   void disableMeter ( void );
 
   virtual void checkResources( void );
@@ -64,6 +61,8 @@ protected:
   void setNumBits(int n);
   char *fieldLegend_;
 
+  void drawfields( int manditory = 0 );
+  void drawBits( int manditory = 0 );
   void setfieldlegend(const char *fieldlegend);
 
 private:

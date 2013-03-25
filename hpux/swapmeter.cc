@@ -36,7 +36,6 @@ void SwapMeter::checkevent( void ){
     return;
   
   getswapinfo();
-  drawfields();
 }
 
 void SwapMeter::getswapinfo( void ){

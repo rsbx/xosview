@@ -36,8 +36,6 @@ void IntMeter::checkevent( void ){
     bits_[i] = ((irqs_[i] - lastirqs_[i]) != 0);
     lastirqs_[i] = irqs_[i];
   }
-
-  BitMeter::checkevent();
 }
 
 void IntMeter::checkResources( void ){

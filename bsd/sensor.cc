@@ -47,7 +47,6 @@ void BSDSensor::checkResources( void ) {
 
 void BSDSensor::checkevent( void ) {
 	getsensor();
-	drawfields();
 }
 
 void BSDSensor::getsensor( void ) {

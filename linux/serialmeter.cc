@@ -54,7 +54,6 @@ SerialMeter::~SerialMeter( void ){
 
 void SerialMeter::checkevent( void ){
   getserial();
-  BitMeter::checkevent();
 }
 
 void SerialMeter::checkResources( void ){

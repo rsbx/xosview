@@ -247,18 +247,15 @@ void BtryMeter::checkevent( void ){
     /* APM only changes if we have APM */
     handle_apm_state();
     drawlegend();
-    drawfields(1);
     return;
   }
 
   if ( old_acpi_charge_state != acpi_charge_state ) {
     handle_acpi_state();
     drawlegend();
-    drawfields(1);
     return;
   }
 
-  drawfields();
 }
 
 

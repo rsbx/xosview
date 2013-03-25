@@ -47,8 +47,6 @@ void BtryMeter::checkResources( void ){
 
 void BtryMeter::checkevent( void ){
   getpwrinfo();
-
-  drawfields();
 }
 
 

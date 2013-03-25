@@ -78,9 +78,6 @@ void DiskMeter::checkevent( void )
         getsysfsdiskinfo();
     else
         getdiskinfo();
-
-    drawfields();
-
     }
 
 // IMHO the logic here is quite broken - but for backward compat UNCHANGED:

@@ -82,7 +82,6 @@ void GfxMeter::checkResources(void)
 void GfxMeter::checkevent(void)
 {
     getgfxinfo();
-    drawfields();
 }
 
 void GfxMeter::getgfxinfo(void)

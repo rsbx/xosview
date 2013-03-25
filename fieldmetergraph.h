@@ -22,11 +22,10 @@ public:
               int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
   virtual ~FieldMeterGraph( void );
 
-  virtual void drawfields( int manditory = 0 );
-
 protected:
   virtual void setNumCols( int n );
   virtual void setNumFields(int n);
+  virtual void drawfields( int manditory = 0 );
 
   int useGraph_;
   int graphNumCols_;
@@ -41,6 +40,7 @@ private:
   void checkResize(void);
   void drawBar( int i );
   enum XOSView::windowVisibilityState lastWinState;
+
 };
 
 #endif

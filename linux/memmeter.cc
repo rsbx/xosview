@@ -46,7 +46,6 @@ void MemMeter::checkevent( void ){
 	 fields_[2]/1024.0/1024.0, fields_[3]/1024.0/1024.0,
 	 fields_[4]/1024.0/1024.0, fields_[5]/1024.0/1024.0);
   */
-  drawfields();
 }
 
 // FIXME: /proc/memstat and /proc/meminfo don't seem to correspond

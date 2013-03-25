@@ -43,7 +43,6 @@ void PageMeter::checkResources( void ) {
 
 void PageMeter::checkevent( void ) {
 	getpageinfo();
-	drawfields();
 }
 
 void PageMeter::getpageinfo( void ) {

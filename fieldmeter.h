@@ -17,7 +17,6 @@ public:
 	      int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
   virtual ~FieldMeter( void );
 
-  virtual void drawfields( int manditory = 0 );
   void setfieldcolor( int field, const char *color );
   void setfieldcolor( int field, unsigned long color);
   void docaptions( int val ) { docaptions_ = val; }
@@ -30,7 +29,7 @@ public:
 
   void setUsed (double val, double total);
   void draw( void );
-  void checkevent( void );
+  virtual void update( void );
   void disableMeter ( void );
 
   virtual void checkResources( void );
@@ -54,11 +53,12 @@ protected:
   void drawused( int manditory );
   bool checkX(int x, int width) const;
 
+  virtual void drawfields( int manditory = 0 );
   virtual void setNumFields(int n);
-
 
 private:
   Timer _timer;
+
 protected:
   void IntervalTimerStart() { _timer.start(); }
   void IntervalTimerStop() { _timer.stop(); }

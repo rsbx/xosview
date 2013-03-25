@@ -83,7 +83,6 @@ void LoadMeter::checkevent( void ) {
 			drawlegend();
 		}
 	}
-	drawfields();
 }
 
 void LoadMeter::getloadinfo( void ) {

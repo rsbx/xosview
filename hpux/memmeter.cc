@@ -44,7 +44,6 @@ void MemMeter::checkevent( void ){
     return;
   
   getmeminfo();
-  drawfields();
 }
 
 void MemMeter::getmeminfo( void ){

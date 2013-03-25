@@ -46,8 +46,8 @@ void BitMeter::checkResources( void ){
   Meter::checkResources();
 }
 
-void BitMeter::checkevent( void ){
-  drawBits();
+void BitMeter::update(void) {
+  drawBits(0);
 }
 
 void BitMeter::drawBits(int manditory) {

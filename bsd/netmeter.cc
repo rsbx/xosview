@@ -59,7 +59,6 @@ void NetMeter::checkResources( void ) {
 
 void NetMeter::checkevent( void ) {
 	getstats();
-	drawfields();
 }
 
 void NetMeter::getstats(void) {

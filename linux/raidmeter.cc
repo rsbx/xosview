@@ -49,7 +49,6 @@ void RAIDMeter::checkevent( void ){
     setfieldcolor(0,completeColor_);
   }
   setUsed(fields_[0], total_);
-  BitFieldMeter::checkevent();
 }
 
 void RAIDMeter::checkResources( void ){

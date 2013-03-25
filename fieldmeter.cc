@@ -249,6 +249,11 @@ void FieldMeter::drawused( int manditory ){
 }
 
 
+void FieldMeter::update(void) {
+  drawfields(0);
+}
+
+
 void FieldMeter::drawfields(int manditory) {
   int i;
   int start, end;
@@ -282,11 +287,6 @@ void FieldMeter::drawfields(int manditory) {
     }
     start = end+1;
   }
-}
-
-
-void FieldMeter::checkevent(void) {
-  drawfields(0);
 }
 
 

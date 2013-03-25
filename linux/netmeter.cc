@@ -212,7 +212,6 @@ void NetMeter::checkeventNew(void)
     if (total_)
         setUsed(fields_[0] + fields_[1], total_);
     _timer.start();
-    drawfields();
     }
 
 void NetMeter::checkeventOld(void)
@@ -303,7 +302,6 @@ void NetMeter::checkeventOld(void)
     if (total_)
         setUsed(fields_[0] + fields_[1], total_);
     _timer.start();
-    drawfields();
     }
 
 void NetMeter::adjust(void)

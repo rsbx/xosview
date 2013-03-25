@@ -143,7 +143,20 @@ XOSView::XOSView( const char * instName, int argc, char *argv[] ) : XWin(),
   title( winname() );
   iconname( winname() );
   dolegends();
+  sampleClock = 0;
 }
+
+
+XOSView::~XOSView( void ){
+  MeterNode *tmp = meters_;
+  while ( tmp != NULL ){
+    MeterNode *save = tmp->next_;
+    delete tmp->meter_;
+    delete tmp;
+    tmp = save;
+  }
+}
+
 
 void XOSView::checkVersion(int argc, char *argv[]) const
     {
@@ -242,10 +255,25 @@ const char *XOSView::winname( void ){
 }
 
 
+void XOSView::collect(void) {
+  MeterNode *tmp = meters_;
+
+  XOSDEBUG("Doing collect.\n");
+
+  while (tmp != NULL) {
+    if (tmp->meter_->requestevent(sampleClock))
+      tmp->meter_->checkevent();
+    tmp = tmp->next_;
+  }
+}
+
+
 void  XOSView::resize(void) {
   int newwidth;
   int newheight;
   int vremain;
+
+  XOSDEBUG("Doing resize.\n");
 
   newwidth = width_ - xoff_ - hmargin_;
   newwidth = (newwidth > 2*BORDER_WIDTH+1) ? newwidth : 2*BORDER_WIDTH+1;
@@ -269,35 +297,59 @@ void  XOSView::resize(void) {
 }
 
 
-XOSView::~XOSView( void ){
+void XOSView::draw(void) {
   MeterNode *tmp = meters_;
-  while ( tmp != NULL ){
-    MeterNode *save = tmp->next_;
-    delete tmp->meter_;
-    delete tmp;
-    tmp = save;
+
+  XOSDEBUG("Doing draw.\n");
+
+  clear();
+
+  while (tmp != NULL) {
+    tmp->meter_->draw();
+    tmp = tmp->next_;
   }
 }
 
-void XOSView::draw(void) {
-  if (windowVisibility != OBSCURED) {
+
+void XOSView::update(void) {
+  MeterNode *tmp = meters_;
+
+  XOSDEBUG("Doing update.\n");
+
+  while (tmp != NULL) {
+    if (tmp->meter_->requestevent(sampleClock))
+      tmp->meter_->update();
+    tmp = tmp->next_;
+  }
+}
+
+
+void XOSView::flushX(bool force) {
+  if (!force) {
     MeterNode *tmp = meters_;
 
-    XOSDEBUG("Doing draw.\n");
-    clear();
-
-    while (tmp != NULL) {
-      tmp->meter_->draw();
+    while ( tmp != NULL ){
+      if (tmp->meter_->requestevent(sampleClock)) {
+        force = true;
+        break;
+      }
       tmp = tmp->next_;
     }
   }
-  else {
-    XOSDEBUG("Skipping draw:  not visible.\n");
+
+  if (force) {
+    XOSDEBUG("Doing flush.\n");
+
+    flush();
   }
 }
 
-void XOSView::run( void ){
+
+void XOSView::run(void) {
   while(!done_) {
+    // Update the metrics
+    collect();
+
     // Check for X11 events
     checkevent();
 
@@ -308,28 +360,31 @@ void XOSView::run( void ){
       _deferred_redraw = true;
     }
 
-    // redraw everything if needed
-    if (_deferred_redraw) {
-      draw();
+    if (windowVisibility == OBSCURED) {
       _deferred_redraw = false;
     }
 
-    // Update the metrics & meters
-    MeterNode *tmp = meters_;
-    while ( tmp != NULL ){
-      if ( tmp->meter_->requestevent() )
-        tmp->meter_->checkevent();
-      tmp = tmp->next_;
+    // redraw everything if needed
+    if (_deferred_redraw) {
+      draw();
+    } else {
+      // just the updated meters
+      update();
     }
 
-    flush();
+    flushX(_deferred_redraw);
+
+    _deferred_redraw = false;
 
     /*  First, sleep for the proper integral number of seconds --
      *  usleep only deals with times less than 1 sec.  */
     if (sleeptime_) sleep((unsigned int)sleeptime_);
     if (usleeptime_) usleep( (unsigned int)usleeptime_);
+
+    sampleClock++;
   }
 }
+
 
 void XOSView::keyPressEvent( XKeyEvent &event ){
   char c = 0;
@@ -386,16 +441,17 @@ void XOSView::checkArgs (int argc, char** argv) const
   }
 }
 
+
 void XOSView::exposeEvent(XExposeEvent &event) {
   _deferred_redraw = true;
   XOSDEBUG("Got expose event.\n");
 }
 
+
 /*
  * All window changes come in via XConfigureEvent (not
  * XResizeRequestEvent)
  */
-
 void XOSView::resizeEvent(XConfigureEvent &event) {
   XOSDEBUG("Got configure event.\n");
 
@@ -408,6 +464,7 @@ void XOSView::resizeEvent(XConfigureEvent &event) {
   height(event.height);
   _deferred_resize = true;
 }
+
 
 void XOSView::visibilityEvent(XVisibilityEvent &event) {
   if (event.state == VisibilityPartiallyObscured) {
@@ -433,6 +490,7 @@ void XOSView::visibilityEvent(XVisibilityEvent &event) {
             : "Obscured"
     );
 }
+
 
 void XOSView::unmapEvent(XUnmapEvent & ev) {
   /* unclutter creates a subwindow of our window if it hides the cursor,

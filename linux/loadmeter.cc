@@ -300,8 +300,6 @@ void LoadMeter::checkevent( void ){
       drawlegend();
     }
   }
-
-  drawfields();
 }
 
 

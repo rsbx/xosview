@@ -105,7 +105,6 @@ void ACPITemp::checkResources( void ) {
 
 void ACPITemp::checkevent( void ) {
   getacpitemp();
-  drawfields();
 }
 
 void ACPITemp::getacpitemp( void ) {

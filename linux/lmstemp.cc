@@ -181,8 +181,6 @@ void LmsTemp::checkResources( void ){
 
 void LmsTemp::checkevent( void ){
   getlmstemp();
-
-  drawfields();
 }
 
 // Note:

@@ -17,7 +17,6 @@ Meter::Meter( XOSView *parent, const char *title, const char *legend,
   dolegends_ = dolegends;
   dousedlegends_ = dousedlegends;
   priority_ = 1;
-  counter_ = 0;
   resize( parent->xoff(), parent->newypos(), parent->width() - 10, 10 );
 
 }

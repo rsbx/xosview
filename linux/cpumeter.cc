@@ -222,7 +222,6 @@ void CPUMeter::checkResources( void ){
 
 void CPUMeter::checkevent( void ){
   getcputime();
-  drawfields();
 }
 
 void CPUMeter::getcputime( void ){

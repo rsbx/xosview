@@ -47,7 +47,6 @@ void IrqRateMeter::checkResources( void ) {
 
 void IrqRateMeter::checkevent( void ) {
 	getinfo();
-	drawfields();
 }
 
 void IrqRateMeter::getinfo( void ) {

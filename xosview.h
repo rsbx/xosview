@@ -24,9 +24,6 @@ public:
   XOSView( const char* instName, int argc, char *argv[] );
   ~XOSView( void );
 
-  void figureSize ( void );
-  void resize( void );
-  void draw ( void );
   void run( void );
   const char *winname( void );
 
@@ -69,11 +66,21 @@ protected:
   void unmapEvent( XUnmapEvent &event);
   void checkVersion(int argc, char *argv[]) const;
 
+  void figureSize(void);
+  void collect(void);
+  void resize(void);
+  void draw(void);
+  void update(void);
+
 private:
 
+  unsigned long sampleClock;
   bool _deferred_resize;
   bool _deferred_redraw;
   enum windowVisibilityState windowVisibility;
+
+  void flushX(bool force);
+
 };
 
 #ifdef DEBUG

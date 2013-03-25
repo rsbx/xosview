@@ -58,7 +58,6 @@ void DiskMeter::checkResources( void ) {
 
 void DiskMeter::checkevent( void ) {
 	getstats();
-	drawfields();
 }
 
 void DiskMeter::getstats( void ) {

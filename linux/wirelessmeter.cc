@@ -122,7 +122,6 @@ void WirelessMeter::checkResources(void)
 void WirelessMeter::checkevent(void)
 	{
 	update_stats();
-	drawfields();
 	}
 
 

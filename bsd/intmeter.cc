@@ -43,8 +43,6 @@ void IntMeter::checkevent( void ) {
 	}
 	bzero(inbrs_, (irqcount_ + 1) * sizeof(inbrs_[0]));
 	bzero(irqs_, (irqcount_ + 1) * sizeof(irqs_[0]));
-
-	BitMeter::checkevent();
 }
 
 void IntMeter::checkResources( void ) {

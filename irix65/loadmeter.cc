@@ -73,7 +73,6 @@ void LoadMeter::checkResources(void)
 void LoadMeter::checkevent(void)
 {
     getloadinfo();
-    drawfields();
 }
 
 void LoadMeter::getloadinfo(void)
