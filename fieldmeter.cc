@@ -4,12 +4,18 @@
 //  This file may be distributed under terms of the GPL
 //
 
+
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
+#include <string.h>
 #include "fieldmeter.h"
 #include "xosview.h"
 #include <math.h>
+
+
+#define LEGEND_FIELD_SEP	"/"
+
 
 FieldMeter::FieldMeter( XOSView *parent, int numfields, const char *title,
                         const char *legend, int docaptions, int dolegends,
@@ -49,6 +55,7 @@ FieldMeter::~FieldMeter( void ){
   delete[] last_end;
 }
 
+
 void FieldMeter::checkResources( void ){
   Meter::checkResources();
   usedcolor_ = parent_->allocColor( parent_->getResource( "usedLabelColor") );
@@ -71,6 +78,7 @@ void FieldMeter::SetUsedFormat ( const char * const fmt ) {
     exit(1);
   }
 }
+
 
 void FieldMeter::setUsed (double val, double total)
 {
@@ -100,18 +108,22 @@ void FieldMeter::setUsed (double val, double total)
   }
 }
 
+
 void FieldMeter::reset( void ){
   for ( int i = 0 ; i < numfields_ ; i++ )
     last_start[i] = last_end[i] = -1;
 }
 
+
 void FieldMeter::setfieldcolor( int field, const char *color ){
   colors_[field] = parent_->allocColor( color );
 }
 
+
 void FieldMeter::setfieldcolor( int field, unsigned long color ) {
   colors_[field] = color;
 }
+
 
 void FieldMeter::draw( void ){
     /*  Draw the outline for the fieldmeter.  */
@@ -130,43 +142,70 @@ void FieldMeter::draw( void ){
   }
 
   drawlegend();
-  drawfields( 1 );
+  drawfields(1);
 }
 
-void FieldMeter::drawlegend( void ){
-  char *tmp1, *tmp2, buff[100];
-  int n, x = x_;
+
+void FieldMeter::drawlegend(void) {
+  int x = 0;
+  int fieldcount = 0;
+  char *p0;
+  char *p1;
+  char *p2;
 
   if (!docaptions_ || !dolegends_)
     return;
 
-  parent_->clear( x_, y_ - parent_->textHeight(),
-                  width_, parent_->textHeight() );
+  parent_->clear(x_, y_-parent_->textHeight(), width_, parent_->textHeight());
 
-  tmp1 = tmp2 = legend_;
-  for ( int i = 0 ; i < numfields_ ; i++ ){
-    n = 0;
-    while ( (*tmp2 != '/') && (*tmp2 != '\0') ){
-      tmp2++;
-      n++;
-    }
-    tmp2++;
-    strncpy( buff, tmp1, n );
-    buff[n] = '\0';
-    parent_->setStippleN(i%4);
-    parent_->setForeground( colors_[i] );
-    parent_->drawString( x, y_-1, buff );
-    x += parent_->textWidth( buff, n );
-    parent_->setForeground( parent_->foreground() );
-    if ( i != numfields_ - 1 )
-      parent_->drawString( x, y_-1, "/" );
-    x += parent_->textWidth( "/", 1 );
-    tmp1 = tmp2;
+  if (!(p0 = p1 = strdup(legend_))) {
+    std::cerr << "strdup failed" << std::endl;
+    exit(1);
   }
-  parent_->setStippleN(0);	/*  Restore default all-bits stipple.  */
+  p1 = strtok_r(p1, LEGEND_FIELD_SEP, &p2);
+  while (p1) {
+    fieldcount++;
+    p1 = strtok_r(NULL, LEGEND_FIELD_SEP, &p2);
+  }
+  free(p0);
+
+  if (fieldcount == numfields_) {
+    int i = 0;
+
+    if (!(p0 = p1 = strdup(legend_))) {
+      std::cerr << "strdup failed" << std::endl;
+      exit(1);
+    }
+    if ((p1 = strtok_r(p1, LEGEND_FIELD_SEP, &p2))) {
+      parent_->setStippleN(i%4);
+      parent_->setForeground(colors_[i]);
+      parent_->drawString(x_+x, y_-1, p1);
+      x += parent_->textWidth(p1);
+    }
+    while (p1) {
+      i++;
+      if ((p1 = strtok_r(NULL, LEGEND_FIELD_SEP, &p2))) {
+        parent_->setForeground(parent_->foreground());
+        parent_->setStippleN(0);
+        parent_->drawString(x_+x, y_-1, "/");
+        x += parent_->textWidth("/", 1);
+
+        parent_->setStippleN(i%4);
+        parent_->setForeground(colors_[i]);
+        parent_->drawString(x_+x, y_-1, p1);
+        x += parent_->textWidth(p1);
+      }
+    }
+    free(p0);
+    parent_->setStippleN(0);
+  } else {
+    parent_->setForeground(textcolor_);
+    parent_->drawString(x_+x, y_-1, legend_);
+  }
 }
 
-void FieldMeter::drawused( int manditory ){
+
+void FieldMeter::drawused(int manditory) {
   int xoffset;
 
   if (!dolegends_ || !dolegends_ || (!manditory && lastused_ == used_))
@@ -309,6 +348,7 @@ void FieldMeter::setNumFields(int n) {
 				  /* Thomas Waldmann ( tw@com-ma.de )      */
   }
 }
+
 
 bool FieldMeter::checkX(int x, int width) const {
   if ((x < x_) || (x + width < x_)
