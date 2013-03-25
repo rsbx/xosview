@@ -58,7 +58,7 @@ static const char NAME[] = "xosview@";
 double MAX_SAMPLES_PER_SECOND = 10;
 
 XOSView::XOSView( const char * instName, int argc, char *argv[] ) : XWin(),
-						xrm(Xrm("xosview", instName)){
+						xrm(Xrm("XOSView", instName)){
   // Check for version arguments first.  This allows
   // them to work without the need for a connection
   // to the X server

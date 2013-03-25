@@ -2,134 +2,134 @@
 
 ! General Resources
 
-!xosview*title:
-!xosview*geometry:           +5+5
-!xosview*display:
-xosview*captions:           True
-xosview*labels:             True
-xosview*meterLabelColor:    wheat
-xosview*usedlabels:         True
-xosview*usedLabelColor:     wheat
-xosview*borderwidth:        1
-xosview*font:               7x13bold
-xosview*background:         navy
-xosview*foreground:         wheat
-xosview*enableStipple:	    False ! Change to true to try beta stipple support.
-xosview*samplesPerSec:      10
-xosview*horizontalMargin:   4
-xosview*verticalMargin:     4
-xosview*verticalSpacing:    3
+!*title:
+!*geometry:           +5+5
+!*display:
+*captions:           True
+*labels:             True
+*meterLabelColor:    wheat
+*usedlabels:         True
+*usedLabelColor:     wheat
+*borderwidth:        1
+*font:               7x13bold
+*background:         navy
+*foreground:         wheat
+*enableStipple:      False ! Change to true to try beta stipple support.
+*samplesPerSec:      10
+*horizontalMargin:   4
+*verticalMargin:     4
+*verticalSpacing:    3
 
 ! Load Meter Resources
 
-xosview*load:                True
-xosview*loadPriority:        10
-xosview*loadGraph:           False
-xosview*loadDecay:           False
-xosview*loadUsedFormat:      float
-xosview*loadCpuSpeed:        True
-xosview*loadIdleColor:       aquamarine
-xosview*loadColorList:       seagreen orange red
-! xosview*loadColorList:     blue4 green3 yellow orange red magenta
-xosview*loadScalingAdjust:   auto  ! auto or number
-xosview*loadScalingBase:     4
-xosview*loadScalingBehavior: traditional      ! traditional or overlay
+*load:                 True
+*loadPriority:         10
+*loadGraph:            False
+*loadDecay:            False
+*loadUsedFormat:       float
+*loadCpuSpeed:         True
+*loadIdleColor:        aquamarine
+*loadColorList:        seagreen orange red
+! *loadColorList:      blue4 green3 yellow orange red magenta
+*loadScalingAdjust:    auto  ! auto or number
+*loadScalingBase:      4
+*loadScalingBehavior:  traditional      ! traditional or overlay
 ! useful for testing
-! xosview*loadFileName:        /tmp/load
+! *loadFileName:       /tmp/load
 
 ! Gfx Meter Resources ( Irix )
 
-xosview*gfx:               True
-xosview*gfxCritColor:      red
-xosview*gfxWarnColor:      orange
-xosview*gfxSwapColor:      seagreen
-xosview*gfxIdleColor:      aquamarine
-xosview*gfxPriority:       1    ! don't change, until you know what you do
-xosview*gfxCritThreshold:  120  ! swapbuffers/s per pipe
-xosview*gfxWarnThreshold:  60   ! swapbuffers/s per pipe
-xosview*gfxDecay:          False
-xosview*gfxGraph:          False
-xosview*gfxUsedFormat:	   autoscale
+*gfx:               True
+*gfxCritColor:      red
+*gfxWarnColor:      orange
+*gfxSwapColor:      seagreen
+*gfxIdleColor:      aquamarine
+*gfxPriority:       1    ! don't change, until you know what you do
+*gfxCritThreshold:  120  ! swapbuffers/s per pipe
+*gfxWarnThreshold:  60   ! swapbuffers/s per pipe
+*gfxDecay:          False
+*gfxGraph:          False
+*gfxUsedFormat:     autoscale
 
 ! CPU Meter Resources
 
-xosview*cpu:                True
-xosview*cpuFields:          USR SYS WIO IDLE
-xosview*cpuUserColor:       seagreen
-xosview*cpuNiceColor:       yellow
-xosview*cpuSystemColor:     orange
-xosview*cpuInterruptColor:  lightblue
-xosview*cpuSInterruptColor: orange red
-xosview*cpuWaitColor:       red
-xosview*cpuFreeColor:       aquamarine
-xosview*cpuGuestColor:      blue
-xosview*cpuNiceGuestColor:  gold
-xosview*cpuStolenColor:     purple
-xosview*cpuPriority:        1
-xosview*cpuDecay:           True
-xosview*cpuGraph:           True
-xosview*cpuUsedFormat:	    percent
-xosview*cpuFormat:          auto   ! single, all, auto or both
+*cpu:                 True
+*cpuFields:           USR SYS WIO IDLE
+*cpuUserColor:        seagreen
+*cpuNiceColor:        yellow
+*cpuSystemColor:      orange
+*cpuInterruptColor:   lightblue
+*cpuSInterruptColor:  orange red
+*cpuWaitColor:        red
+*cpuFreeColor:        aquamarine
+*cpuGuestColor:       blue
+*cpuNiceGuestColor:   gold
+*cpuStolenColor:      purple
+*cpuPriority:         1
+*cpuDecay:            True
+*cpuGraph:            True
+*cpuUsedFormat:       percent
+*cpuFormat:           auto   ! single, all, auto or both
 
 ! Memory Meter Resources
 ! Not all of these are used by a specific platform.
 
-xosview*mem:                True
-xosview*memKernelColor:     yellow
-xosview*memUsedColor:       seagreen
-xosview*memSharedColor:     SkyBlue
-xosview*memBufferColor:     red
-xosview*memSlabColor:	    blue
-xosview*memMapColor:	    SlateBlue1
-xosview*memCacheColor:      orange
-xosview*memFreeColor:       aquamarine
-xosview*memTextColor:       blue
-xosview*memOtherColor:      orange
-xosview*memActiveColor:	    blue
-xosview*memInactiveColor:   lightblue
-xosview*memWiredColor:      orange
-xosview*memPriority:        10
-xosview*memDecay:           False
-xosview*memGraph:           False
-xosview*memUsedFormat:	    autoscale
+*mem:                True
+*memKernelColor:     yellow
+*memUsedColor:       seagreen
+*memSharedColor:     SkyBlue
+*memBufferColor:     red
+*memSlabColor:       blue
+*memMapColor:        SlateBlue1
+*memCacheColor:      orange
+*memFreeColor:       aquamarine
+*memTextColor:       blue
+*memOtherColor:      orange
+*memActiveColor:     blue
+*memInactiveColor:   lightblue
+*memWiredColor:      orange
+*memPriority:        10
+*memDecay:           False
+*memGraph:           False
+*memUsedFormat:      autoscale
 
 ! Swap Meter Resources
 
-xosview*swap:               True
-xosview*swapUsedColor:      seagreen
-xosview*swapFreeColor:      aquamarine
-xosview*swapReservedColor:  yellow
-xosview*swapPriority:       10
-xosview*swapDecay:          False
-xosview*swapGraph:          False
-xosview*swapUsedFormat:	    autoscale
+*swap:               True
+*swapUsedColor:      seagreen
+*swapFreeColor:      aquamarine
+*swapReservedColor:  yellow
+*swapPriority:       10
+*swapDecay:          False
+*swapGraph:          False
+*swapUsedFormat:     autoscale
 
 
 ! Page Meter Resources
 
-xosview*page:               True
-xosview*pageBandwidth:      120
-xosview*pageInColor:        SkyBlue
-xosview*pageOutColor:       SlateBlue1
-xosview*pageIdleColor:      aquamarine
-xosview*pagePriority:       5
-xosview*pageDecay:          False
-xosview*pageGraph:          False
-xosview*pageUsedFormat:     autoscale
+*page:               True
+*pageBandwidth:      120
+*pageInColor:        SkyBlue
+*pageOutColor:       SlateBlue1
+*pageIdleColor:      aquamarine
+*pagePriority:       5
+*pageDecay:          False
+*pageGraph:          False
+*pageUsedFormat:     autoscale
 
 
 ! Network Meter Resources
 
-xosview*net:		    True
-xosview*netBandwidth:       10000000  ! for 100Mbit/s
-xosview*netInColor:         SkyBlue
-xosview*netOutColor:        SlateBlue1
-xosview*netBackground:      aquamarine
-xosview*netPriority:        2
-xosview*netDecay:           True
-xosview*netGraph:           True
-xosview*netUsedFormat:	    autoscale
-xosview*netIface:           False
+*net:                True
+*netBandwidth:       10000000  ! for 100Mbit/s
+*netInColor:         SkyBlue
+*netOutColor:        SlateBlue1
+*netBackground:      aquamarine
+*netPriority:        2
+*netDecay:           True
+*netGraph:           True
+*netUsedFormat:      autoscale
+*netIface:           False
 
 ! Linux-only resources:
 
@@ -139,170 +139,171 @@ xosview*netIface:           False
 ! (autodetection may fail sometimes, if the port is
 ! locked by ppp/slip for example)
 
-!xosview*serial0:            0x3f8
-!xosview*serial1:            0x2f8
-!xosview*serial2:            0x3e8
-!xosview*serial3:            0x2e8
-xosview*serial0:            False
-xosview*serial1:            False
-xosview*serial2:            False
-xosview*serial3:            False
-xosview*serial4:            False
-xosview*serial5:            False
-xosview*serial6:            False
-xosview*serial7:            False
-xosview*serial8:            False
-xosview*serial9:            False
-xosview*serialOnColor:      red
-xosview*serialOffColor:     aquamarine
-xosview*serialPriority:     1
+!*serial0:            0x3f8
+!*serial1:            0x2f8
+!*serial2:            0x3e8
+!*serial3:            0x2e8
+*serial0:            False
+*serial1:            False
+*serial2:            False
+*serial3:            False
+*serial4:            False
+*serial5:            False
+*serial6:            False
+*serial7:            False
+*serial8:            False
+*serial9:            False
+*serialOnColor:      red
+*serialOffColor:     aquamarine
+*serialPriority:     1
 
 ! Interrupt Meter Resources
 
-xosview*interrupts:         False
-xosview*intSeparate:        False
-xosview*intOnColor:         red
-xosview*intOffColor:        aquamarine
-xosview*intPriority:	    1
+*interrupts:         False
+*intSeparate:        False
+*intOnColor:         red
+*intOffColor:        aquamarine
+*intPriority:        1
 
 ! Interrupt Rate Meter Resources
-xosview*irqrate:	True
-xosview*irqrateUsedColor:	red
-xosview*irqrateIdleColor:	aquamarine
-xosview*irqratePriority:	1
-xosview*irqrateUsedFormat:  autoscale
-xosview*irqrateDecay:	True
-xosview*irqrateGraph:	False
+
+*irqrate:            True
+*irqrateUsedColor:   red
+*irqrateIdleColor:   aquamarine
+*irqratePriority:    1
+*irqrateUsedFormat:  autoscale
+*irqrateDecay:       True
+*irqrateGraph:       False
 
 ! Battery Meter Resources
 
-xosview*battery:            True
-xosview*batteryLeftColor:   orange
-xosview*batteryUsedColor:   aquamarine
-xosview*batteryPriority:    50
-xosview*batteryUsedFormat:  percent
-xosview*batteryChargeColor: seagreen
-xosview*batteryFullColor:   magenta
-xosview*batteryLowColor:    red
-xosview*batteryCritColor:   red
-xosview*batteryNoneColor:   grey
+*battery:             True
+*batteryLeftColor:    orange
+*batteryUsedColor:    aquamarine
+*batteryPriority:     50
+*batteryUsedFormat:   percent
+*batteryChargeColor:  seagreen
+*batteryFullColor:    magenta
+*batteryLowColor:     red
+*batteryCritColor:    red
+*batteryNoneColor:    grey
 
 ! Wireless Meter Resources
 
-xosview*wireless:                           True
-! was xosview*PoorQualityColor
-xosview*wirelessColors*Poor:                red
-! was xosview*FairQualityColor
-xosview*wirelessColors*Fair:                orange
-! was xosview*GoodQualityColor
-xosview*wirelessColors*Good:                seagreen
-xosview*wirelessColors*Offline:             grey50
-! was xosview*wirelessUsedColor
-xosview*wirelessColors*Idle:                aquamarine
-xosview*wirelessRange*Granularity:          30
-xosview*wirelessRange*Ratio:                0.5
+*wireless:                           True
+! was *PoorQualityColor
+*wirelessColors*Poor:                red
+! was *FairQualityColor
+*wirelessColors*Fair:                orange
+! was *GoodQualityColor
+*wirelessColors*Good:                seagreen
+*wirelessColors*Offline:             grey50
+! was *wirelessUsedColor
+*wirelessColors*Idle:                aquamarine
+*wirelessRange*Granularity:          30
+*wirelessRange*Ratio:                0.5
 ! Resources for individual interfaces can be set as follows:
-! xosview*wirelessColors.wlan0.Poor:        red
-! xosview*wirelessColors.wlan0.Fair:        orange
-! xosview*wirelessColors.wlan0.Good:        green
-! xosview*wirelessColors.wlan0.Offline:     black
-! xosview*wirelessColors.wlan0.Idle:        white
-! xosview*wirelessRange.wlan0.Granularity:  70
-! xosview*wirelessRange.wlan0.Ratio:        0.75
-xosview*wirelessPriority:                   1
-xosview*wirelessUsedFormat:                 autoscale
-xosview*wirelessDecay:                      True
-xosview*wirelessGraph:                      False
+! *wirelessColors.wlan0.Poor:        red
+! *wirelessColors.wlan0.Fair:        orange
+! *wirelessColors.wlan0.Good:        green
+! *wirelessColors.wlan0.Offline:     black
+! *wirelessColors.wlan0.Idle:        white
+! *wirelessRange.wlan0.Granularity:  70
+! *wirelessRange.wlan0.Ratio:        0.75
+*wirelessPriority:                   1
+*wirelessUsedFormat:                 autoscale
+*wirelessDecay:                      True
+*wirelessGraph:                      False
 
 ! Disk Meter Resources
 
-xosview*disk:		    True
-xosview*diskUsedColor:	    seagreen
-xosview*diskIdleColor:	    aquamarine
-xosview*diskWriteColor:     SlateBlue1
-xosview*diskReadColor:      SkyBlue
-xosview*diskBandwidth:      100000000 ! 100MB/s
-xosview*diskPriority:	    10
-xosview*diskDecay:	    True
-xosview*diskUsedFormat:     autoscale
-xosview*diskGraph:	    True
+*disk:              True
+*diskUsedColor:     seagreen
+*diskIdleColor:     aquamarine
+*diskWriteColor:    SlateBlue1
+*diskReadColor:     SkyBlue
+*diskBandwidth:     100000000 ! 100MB/s
+*diskPriority:      10
+*diskDecay:         True
+*diskUsedFormat:    autoscale
+*diskGraph:         True
 
 
-xosview*RAID:                 False
-xosview*RAIDdevicecount:      1
-xosview*RAIDdiskOnlineColor:  green
-xosview*RAIDdiskFailureColor: red
-xosview*RAIDresyncdoneColor:  yellow
-xosview*RAIDresynctodoColor:  red
-xosview*RAIDresynccompleteColor:  green
-xosview*RAIDPriority:         20
-xosview*RAIDUsedFormat:       percent
+*RAID:                     False
+*RAIDdevicecount:          1
+*RAIDdiskOnlineColor:      green
+*RAIDdiskFailureColor:     red
+*RAIDresyncdoneColor:      yellow
+*RAIDresynctodoColor:      red
+*RAIDresynccompleteColor:  green
+*RAIDPriority:             20
+*RAIDUsedFormat:           percent
 
 ! Lms Temp
-xosview*lmstemp:	False
-xosview*lmstempActColor:	blue
-xosview*lmstempHighColor:	red
-xosview*lmstempIdleColor:      aquamarine
-xosview*lmstempPriority: 20
-xosview*lmstempUsedFormat: autoscale
-xosview*lmstempHighest:	100
-! xosview*lmstemp1:	temp
-! xosview*lmstemp2:	remote_temp
+*lmstemp:               False
+*lmstempActColor:       blue
+*lmstempHighColor:      red
+*lmstempIdleColor:      aquamarine
+*lmstempPriority:       20
+*lmstempUsedFormat:     autoscale
+*lmstempHighest:        100
+! *lmstemp1:            temp
+! *lmstemp2:            remote_temp
 ! for more sensors just add entries here
 ! note, to configure sensors with same name in different subdirs,
 ! use absolute paths
 ! labels for above sensors (default = TMP)
-! xosview*lmstempLabel1:    TMP
-! xosview*lmstempLabel2:	RTMP
+! *lmstempLabel1:       TMP
+! *lmstempLabel2:       RTMP
 
-xosview*NFSDStats:       False
-xosview*NFSDStatCallsColor:     green
-xosview*NFSDStatBadCallsColor: red
-xosview*NFSDStatUDPColor:       yellow
-xosview*NFSDStatTCPColor:       orange
-xosview*NFSDStatIdleColor:      aquamarine
-xosview*NFSDStatDecay:		True
-xosview*NFSDStatGraph:		False
-xosview*NFSDStatUsedFormat:	percent
+*NFSDStats:              False
+*NFSDStatCallsColor:     green
+*NFSDStatBadCallsColor:  red
+*NFSDStatUDPColor:       yellow
+*NFSDStatTCPColor:       orange
+*NFSDStatIdleColor:      aquamarine
+*NFSDStatDecay:          True
+*NFSDStatGraph:          False
+*NFSDStatUsedFormat:     percent
 
-xosview*NFSStats:       False
-xosview*NFSStatReTransColor:    red
-xosview*NFSStatAuthRefrshColor: yellow
-xosview*NFSStatCallsColor:      SkyBlue
-xosview*NFSStatIdleColor:       aquamarine
-xosview*NFSStatDecay:		True
-xosview*NFSStatGraph:		False
-xosview*NFSStatUsedFormat:	percent
+*NFSStats:                False
+*NFSStatReTransColor:     red
+*NFSStatAuthRefrshColor:  yellow
+*NFSStatCallsColor:       SkyBlue
+*NFSStatIdleColor:        aquamarine
+*NFSStatDecay:            True
+*NFSStatGraph:            False
+*NFSStatUsedFormat:       percent
 
-xosview*acpitemp:                 False
-xosview*acpitempActColor:         blue
-xosview*acpitempHighColor:        red
-xosview*acpitempIdleColor:        aquamarine
-xosview*acpitempPriority:         20
-xosview*acpitempUsedFormat:       float
-xosview*acpitempHighest:          100
-! xosview*acpitemp1:                CPU
-! xosview*acpitemp2:                MB
+*acpitemp:                 False
+*acpitempActColor:         blue
+*acpitempHighColor:        red
+*acpitempIdleColor:        aquamarine
+*acpitempPriority:         20
+*acpitempUsedFormat:       float
+*acpitempHighest:          100
+! *acpitemp1:                CPU
+! *acpitemp2:                MB
 
-xosview*coretemp:                 False
-xosview*coretempActColor:         blue
-xosview*coretempHighColor:        red
-xosview*coretempIdleColor:        aquamarine
-xosview*coretempPriority:         20
-xosview*coretempUsedFormat:       float
-xosview*coretempDisplayType:      separate    ! separate, maximum or average
-! xosview*coretemp1Package:         0
+*coretemp:                 False
+*coretempActColor:         blue
+*coretempHighColor:        red
+*coretempIdleColor:        aquamarine
+*coretempPriority:         20
+*coretempUsedFormat:       float
+*coretempDisplayType:      separate    ! separate, maximum or average
+! *coretemp1Package:         0
 
-xosview*bsdsensor:               False
-xosview*bsdsensorActColor:       blue
-xosview*bsdsensorHighColor:      red
-xosview*bsdsensorIdleColor:      aquamarine
-xosview*bsdsensorPriority:       20
-xosview*bsdsensorUsedFormat:     float
+*bsdsensor:               False
+*bsdsensorActColor:       blue
+*bsdsensorHighColor:      red
+*bsdsensorIdleColor:      aquamarine
+*bsdsensorPriority:       20
+*bsdsensorUsedFormat:     float
 ! NetBSD example
-! xosview*bsdsensor1:              coretemp0.cur-value
+! *bsdsensor1:            coretemp0.cur-value
 ! OpenBSD example
-! xosview*bsdsensor1:              it0.temp1
-! xosview*bsdsensorLabel1:         CPU0
-! xosview*bsdsensorHigh1:          100
+! *bsdsensor1:            it0.temp1
+! *bsdsensorLabel1:       CPU0
+! *bsdsensorHigh1:        100
 
