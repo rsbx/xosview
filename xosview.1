@@ -1229,37 +1229,94 @@ If no battery is present - or all batteries get removed (while on AC).
 xosview*wireless: (True or False)
 .RS
 If True then xosview will display the link quality of each wireless connection.
-Note that the graph will *never* show up, if you don't have any wireless
-devices, or no wireless extensions in the kernel (/proc/net/wireless).
+Note that the graph(s) will not show up if the kernel does not have wireless
+extensions (/proc/net/wireless), or if no wireless devices are found (active or
+not), or if 'xosview*wireless' is not 'True'.
 Default is true.
 .RE
 
-xosview*PoorQualityColor: \fIcolor\fP
-.RS
-This is the color for the quality field when between 0 and 6.
-.RE
-
-xosview*FairQualityColor: \fIcolor\fP
-.RS
-This is the color for the quality field when between 7 and 14.
-.RE
-
-xosview*GoodQualityColor: \fIcolor\fP
-.RS
-This is the color for the quality field when higher than 14.
-.RE
-
-xosview*wirelessUsedColor: \fIcolor\fP
-.RS
-This is the background color.
-.RE
-
-.\"  Do the priority resource
 .pp wireless
 
 .dc wireless
 
+.dg wireless
+
 .uf wireless
+
+The following resources will be used by all interfaces unless wirelss interface
+specific values are provided.
+
+.RS
+xosview*wirelessColors*Poor: \fIcolor\fP
+.RS
+This is the color for when the signal quality is considered poor.
+.RE
+
+xosview*wirelessColors*Fair: \fIcolor\fP
+.RS
+This is the color for when the signal quality is considered fair.
+.RE
+
+xosview*wirelessColors*Good: \fIcolor\fP
+.RS
+This is the color for when the signal quality is considered good.
+.RE
+
+xosview*wirelessColors*Offline: \fIcolor\fP
+.RS
+This is the color for when the signal quality is not available.
+.RE
+
+xosview*wirelessColors*Idle: \fIcolor\fP
+.RS
+This is the background color.
+.RE
+
+xosview*wirelessRange*Granularity: \fIinteger\fP
+.RS
+If the wireless device driver does not provide information about the range of
+values that it provides for signal quality, then the signal quality displayed
+range will be an automatically computed multiple of this value.
+The integer provided must be between (0, 255).
+Default is 30.
+.RE
+
+xosview*wirelessRange*Ratio: \fIfloat\fP
+.RS
+If the wireless device driver does not provide information about the range of
+values that it provides for signal quality, then the signal quality values
+that determine good vs fair vs poor will be computed from the Granularity
+and Ratio resources such that:
+.RS
+Good: [Ratio*current_range, current_range]
+
+Fair: [Ratio*Good, Good)
+
+Poor: [0, Fair)
+.RE
+The value provided must be between (0.0, 1.0).
+Default is 0.5.
+.RE
+.RE
+
+Color and range values for individual interfaces can be specified using the
+following template.
+.RS
+
+xosview*wirelessColors.<interface>.Poor: \fIcolor\fP
+
+xosview*wirelessColors.<interface>.Fair: \fIcolor\fP
+
+xosview*wirelessColors.<interface>.Good: \fIcolor\fP
+
+xosview*wirelessColors.<interface>.Offline: \fIcolor\fP
+
+xosview*wirelessColors.<interface>.Idle: \fIcolor\fP
+
+xosview*wirelessRange.<interface>.Granularity: \fIinteger\fP
+
+xosview*wirelessRange.<interface>.Ratio: \fIfloat\fP
+.RE
 
 
 \fBDisk Meter Resources\fP
@@ -1472,6 +1529,7 @@ Temperature sensor, and FreeBSD updates.
 Raymond S Brand (rsbx@acm.org)
 .RS
 Linux load meter rewite for predictable scale behaviors.
+Linux wireless meter rewrite to provide more informative graphs.
 Misc fixes.
 .RE
 

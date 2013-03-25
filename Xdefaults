@@ -187,14 +187,30 @@ xosview*batteryNoneColor:   grey
 
 ! Wireless Meter Resources
 
-xosview*wireless:            True
-xosview*PoorQualityColor:    red
-xosview*FairQualityColor:    orange
-xosview*GoodQualityColor:    seagreen
-xosview*wirelessUsedColor:   aquamarine
-xosview*wirelessPriority:    1
-xosview*wirelessUsedFormat:  autoscale
-xosview*wirelessDecay:       True
+xosview*wireless:                           True
+! was xosview*PoorQualityColor
+xosview*wirelessColors*Poor:                red
+! was xosview*FairQualityColor
+xosview*wirelessColors*Fair:                orange
+! was xosview*GoodQualityColor
+xosview*wirelessColors*Good:                seagreen
+xosview*wirelessColors*Offline:             grey50
+! was xosview*wirelessUsedColor
+xosview*wirelessColors*Idle:                aquamarine
+xosview*wirelessRange*Granularity:          30
+xosview*wirelessRange*Ratio:                0.5
+! Resources for individual interfaces can be set as follows:
+! xosview*wirelessColors.wlan0.Poor:        red
+! xosview*wirelessColors.wlan0.Fair:        orange
+! xosview*wirelessColors.wlan0.Good:        green
+! xosview*wirelessColors.wlan0.Offline:     black
+! xosview*wirelessColors.wlan0.Idle:        white
+! xosview*wirelessRange.wlan0.Granularity:  70
+! xosview*wirelessRange.wlan0.Ratio:        0.75
+xosview*wirelessPriority:                   1
+xosview*wirelessUsedFormat:                 autoscale
+xosview*wirelessDecay:                      True
+xosview*wirelessGraph:                      False
 
 ! Disk Meter Resources
 

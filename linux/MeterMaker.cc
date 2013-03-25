@@ -73,15 +73,9 @@ void MeterMaker::makeMeters(void){
 
   // check for the wireless meter
   if ( _xos->isResourceTrue("wireless") ) {
-    ifstream stats( WLFILENAME );
-    if (!stats)
-      std::cerr << "Wireless Meter needs Linux Wireless Extensions or cfg80211-"
-                << "WEXT compatibility to work." << std::endl;
-    else {
-      int count = WirelessMeter::countdevices();
-      for (int i = 0; i < count; i++)
-        push(new WirelessMeter(_xos, i, ( count == 1 ? "WLAN" : WirelessMeter::wirelessStr(i))));
-    }
+    int count = WirelessMeter::countdevices();
+    for (int i = 0; i < count; i++)
+      push(new WirelessMeter(_xos, i, ( count == 1 ? "WLAN" : WirelessMeter::wirelessStr(i))));
   }
 
   // check for the RAID meter
