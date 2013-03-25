@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include "fieldmeter.h"
 #include "xosview.h"
+#include <math.h>
 
 FieldMeter::FieldMeter( XOSView *parent, int numfields, const char *title,
                         const char *legend, int docaptions, int dolegends,
@@ -21,10 +22,11 @@ FieldMeter::FieldMeter( XOSView *parent, int numfields, const char *title,
   print_ = PERCENT;
   used_ = 0;
   lastused_ = -1;
+  lastusedwidth = 0;
   fields_ = NULL;
   colors_ = NULL;
-  lastvals_ = NULL;
-  lastx_ = NULL;
+  last_start = NULL;
+  last_end = NULL;
   setNumFields(numfields);
 }
 
@@ -43,8 +45,8 @@ FieldMeter::disableMeter ( )
 FieldMeter::~FieldMeter( void ){
   delete[] fields_;
   delete[] colors_;
-  delete[] lastvals_;
-  delete[] lastx_;
+  delete[] last_start;
+  delete[] last_end;
 }
 
 void FieldMeter::checkResources( void ){
@@ -100,7 +102,7 @@ void FieldMeter::setUsed (double val, double total)
 
 void FieldMeter::reset( void ){
   for ( int i = 0 ; i < numfields_ ; i++ )
-    lastvals_[i] = lastx_[i] = -1;
+    last_start[i] = last_end[i] = -1;
 }
 
 void FieldMeter::setfieldcolor( int field, const char *color ){
@@ -114,7 +116,7 @@ void FieldMeter::setfieldcolor( int field, unsigned long color ) {
 void FieldMeter::draw( void ){
     /*  Draw the outline for the fieldmeter.  */
   parent_->setForeground( parent_->foreground() );
-  parent_->drawRectangle( x_ - 1, y_ - 1, width_ + 2, height_ + 2 );
+  parent_->drawFilledRectangle( x_, y_, width_, height_ );
   if ( dolegends_ ){
     parent_->setForeground( textcolor_ );
 
@@ -124,7 +126,7 @@ void FieldMeter::draw( void ){
     else
       offset = parent_->textWidth( "XXXXX" );
 
-    parent_->drawString( x_ - offset + 1, y_ + height_, title_ );
+    parent_->drawString( x_ - offset, y_ + height_ - 1, title_ );
   }
 
   drawlegend();
@@ -138,8 +140,8 @@ void FieldMeter::drawlegend( void ){
   if (!docaptions_ || !dolegends_)
     return;
 
-  parent_->clear( x_, y_ - 5 - parent_->textHeight(),
-                  width_ + 5, parent_->textHeight() + 4 );
+  parent_->clear( x_, y_ - parent_->textHeight(),
+                  width_, parent_->textHeight() );
 
   tmp1 = tmp2 = legend_;
   for ( int i = 0 ; i < numfields_ ; i++ ){
@@ -153,11 +155,11 @@ void FieldMeter::drawlegend( void ){
     buff[n] = '\0';
     parent_->setStippleN(i%4);
     parent_->setForeground( colors_[i] );
-    parent_->drawString( x, y_ - 5, buff );
+    parent_->drawString( x, y_-1, buff );
     x += parent_->textWidth( buff, n );
     parent_->setForeground( parent_->foreground() );
     if ( i != numfields_ - 1 )
-      parent_->drawString( x, y_ - 5, "/" );
+      parent_->drawString( x, y_-1, "/" );
     x += parent_->textWidth( "/", 1 );
     tmp1 = tmp2;
   }
@@ -165,13 +167,12 @@ void FieldMeter::drawlegend( void ){
 }
 
 void FieldMeter::drawused( int manditory ){
-  if ( !manditory )
-    if ( lastused_ == used_ )
+  int xoffset;
+
+  if (!dolegends_ || !dolegends_ || (!manditory && lastused_ == used_))
       return;
 
   parent_->setStippleN(0);	/*  Use all-bits stipple.  */
-  static const int onechar = parent_->textWidth( "X" );
-  static int xoffset = parent_->textWidth( "XXXXX" );
 
   char buf[10];
 
@@ -231,73 +232,79 @@ void FieldMeter::drawused( int manditory ){
     snprintf( buf, 10, "%.1f", used_ );
   }
 
-  parent_->clear( x_ - xoffset, y_ + height_ - parent_->textHeight(),
-		 xoffset - onechar / 2, parent_->textHeight() + 1 );
-  parent_->setForeground( usedcolor_ );
-  parent_->drawString( x_ - (strlen( buf ) + 1 ) * onechar + 2,
-		      y_ + height_, buf );
+  xoffset = lastusedwidth;
+  if (xoffset) {
+    parent_->clear( x_ - xoffset, y_ + height_ - parent_->textHeight(),
+		 xoffset, parent_->textHeight() );
+  }
+
+  xoffset = parent_->textWidth(buf);
+  if (xoffset) {
+    parent_->setForeground( usedcolor_ );
+    parent_->drawString( x_ - xoffset, y_ + height_ - 1, buf );
+  }
+  lastusedwidth = xoffset;
 
   lastused_ = used_;
 }
 
-void FieldMeter::drawfields( int manditory ){
-  int twidth, x = x_;
 
-  if ( total_ == 0 )
-    return;
+void FieldMeter::drawfields(int manditory) {
+  int i;
+  int start, end;
+  double runningtotal = 0.0;
+  double total = 0.0;
 
-  for ( int i = 0 ; i < numfields_ ; i++ ){
-    /*  Look for bogus values.  */
-    if (fields_[i] < 0.0) {
-      /*  Only print a warning 5 times per meter, followed by a
-       *  message about no more warnings.  */
-      numWarnings_ ++;
-      if (numWarnings_ < 5)
-	fprintf(stderr, "Warning:  meter %s had a negative "
-	  "value of %f for field %d\n", name(), fields_[i], i);
-      if (numWarnings_ == 5)
-        fprintf(stderr, "Future warnings from the %s meter "
-	  "will not be displayed.\n", name());
-    }
-
-    twidth = (int) ((width_ * (double) fields_[i]) / total_);
-//    twidth = (int)((fields_[i] * width_) / total_);
-    if ( (i == numfields_ - 1) && ((x + twidth) != (x_ + width_)) )
-      twidth = width_ + x_ - x;
-
-    if ( manditory || (twidth != lastvals_[i]) || (x != lastx_[i]) ){
-      parent_->setForeground( colors_[i] );
-      parent_->setStippleN(i%4);
-      parent_->drawFilledRectangle( x, y_, twidth, height_ );
-      parent_->setStippleN(0);	/*  Restore all-bits stipple.  */
-      lastvals_[i] = twidth;
-      lastx_[i] = x;
-    }
-    x += twidth;
-  }
-  if ( dousedlegends_ )
+  if (dousedlegends_)
     drawused( manditory );
+
+  for (i=0; i<numfields_; i++) {
+    if (fields_[i] > 0.0)
+      total += fields_[i];
+    }
+
+  if (!(width_ > 2*BORDER_WIDTH && height_ > 2*BORDER_WIDTH && total > 0.0)) {
+    return;
+  }
+
+  start = 0;
+  for (i=0; i<numfields_; i++) {
+    if (fields_[i] > 0.0)
+      runningtotal += fields_[i];
+    end = floor((width_-2*BORDER_WIDTH)*(runningtotal/total) - 0.5);
+    if (end >= start && (manditory || (start != last_start[i]) || (end != last_end[i]))) {
+      parent_->setForeground(colors_[i]);
+      parent_->setStippleN(i%4);
+      parent_->drawFilledRectangle(x_+start+BORDER_WIDTH, y_+BORDER_WIDTH, end-start+1, height_-2*BORDER_WIDTH);
+      parent_->setStippleN(0);  /*  Restore all-bits stipple.  */
+      last_start[i] = start;
+      last_end[i] = end;
+    }
+    start = end+1;
+  }
 }
 
-void FieldMeter::checkevent( void ){
+
+void FieldMeter::checkevent(void) {
   drawfields(0);
 }
 
-void FieldMeter::setNumFields(int n){
+
+void FieldMeter::setNumFields(int n) {
   numfields_ = n;
   delete[] fields_;
   delete[] colors_;
-  delete[] lastvals_;
-  delete[] lastx_;
+  delete[] last_start;
+  delete[] last_end;
   fields_ = new double[numfields_];
   colors_ = new unsigned long[numfields_];
-  lastvals_ = new int[numfields_];
-  lastx_ = new int[numfields_];
+  last_start = new int[numfields_];
+  last_end = new int[numfields_];
 
   total_ = 0;
   for ( int i = 0 ; i < numfields_ ; i++ ){
     fields_[i] = 0.0;             /* egcs 2.91.66 bug !? don't do this and */
-    lastvals_[i] = lastx_[i] = 0; /* that in a single statement or it'll   */
+    last_start[i] = last_end[i] = -1; /* that in a single statement or it'll   */
                                   /* overwrite too much with 0 ...         */
 				  /* Thomas Waldmann ( tw@com-ma.de )      */
   }

@@ -24,8 +24,6 @@ public:
 
   virtual void drawfields( int manditory = 0 );
 
-  virtual void checkResources( void );
-
 protected:
   virtual void setNumCols( int n );
   virtual void setNumFields(int n);
@@ -39,6 +37,8 @@ protected:
   double *heightfield_;
 
 private:
+  int last_x, last_y, last_width, last_height;
+  void checkResize(void);
   void drawBar( int i );
   enum XOSView::windowVisibilityState lastWinState;
 };

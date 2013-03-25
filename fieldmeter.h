@@ -41,7 +41,8 @@ protected:
   int numfields_;
   double *fields_;
   double total_, used_, lastused_;
-  int *lastvals_, *lastx_;
+  int lastusedwidth;
+  int *last_start, *last_end;
   unsigned long *colors_;
   unsigned long usedcolor_;
   UsedType print_;

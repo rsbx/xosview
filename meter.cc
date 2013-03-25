@@ -36,7 +36,7 @@ void Meter::checkResources( void ){
 void Meter::title( const char *title ){
 
   if ( title_ )
-  	delete[] title_;
+        delete[] title_;
 
   int len = strlen(title);
   title_ = new char[len + 1];
@@ -47,7 +47,7 @@ void Meter::title( const char *title ){
 void Meter::legend( const char *legend ){
 
   if ( legend_ )
-	  delete[] legend_;
+      delete[] legend_;
 
   int len = strlen(legend);
   legend_ = new char[len + 1];
@@ -60,5 +60,4 @@ void Meter::resize( int x, int y, int width, int height ){
   y_ = y;
   width_ = (width>=0) ? width : 0;    // fix for cosmetical bug:
   height_ = (height>=0) ? height : 0; // beware of values < 0 !
-  width_ &= ~1;                       // only allow even width_ values
 }

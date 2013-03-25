@@ -38,7 +38,7 @@ static const char NAME[] = "xosview@";
     const typeof(x) _x = x;	\
     const typeof(y) _y = y;	\
 				\
-    (void) (&_x == &_y); 	\
+    (void) (&_x == &_y);	\
 				\
     _x < _y ? _x : _y;		\
 })
@@ -48,7 +48,7 @@ static const char NAME[] = "xosview@";
     const typeof(x) _x = x;	\
     const typeof(y) _y = y;	\
 				\
-    (void) (&_x == &_y); 	\
+    (void) (&_x == &_y);	\
 				\
     _x > _y ? _x : _y;		\
 })
@@ -93,7 +93,7 @@ XOSView::XOSView( const char * instName, int argc, char *argv[] ) : XWin(),
   vspacing_ = atoi(getResource("verticalSpacing"));
   hmargin_  = MAX(0, hmargin_);
   vmargin_  = MAX(0, vmargin_);
-  vspacing_ = MAX(0, vspacing_);
+  vspacing_ = MAX(-BORDER_WIDTH, vspacing_);
 
   checkArgs (argc, argv);  //  Check for any other unhandled args.
   xoff_ = hmargin_;
@@ -156,23 +156,20 @@ void XOSView::checkVersion(int argc, char *argv[]) const
             }
     }
 
-void XOSView::figureSize ( void ) {
+void XOSView::figureSize(void) {
   if ( legend_ ){
     if ( !usedlabels_ )
-      xoff_ = textWidth( "XXXXX" );
+      xoff_ += textWidth( "XXXXX" );
     else
-      xoff_ = textWidth( "XXXXXXXXX" );
+      xoff_ += textWidth( "XXXXXXXXX" );
 
-    yoff_ = caption_ ? textHeight() + textHeight() / 4 : 0;
+    yoff_ = caption_ ? textHeight() : 0;
   }
   static int firsttime = 1;
   if (firsttime) {
     firsttime = 0;
-    width_ = findx();
-    height_ = findy();
-  }
-  else
-  {
+    width_ = 2*hmargin_ + textWidth( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX" );
+    height_ = 2*vmargin_ + nummeters_*(vspacing_+yoff_+textHeight()) - vspacing_;
   }
 }
 
@@ -212,23 +209,6 @@ void XOSView::addmeter( Meter *fm ){
   nummeters_++;
 }
 
-int XOSView::findx( void ){
-  if ( legend_ ){
-    if ( !usedlabels_ )
-      return textWidth( "XXXXXXXXXXXXXXXXXXXXXXXX" );
-    else
-      return textWidth( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX" );
-  }
-  return 80;
-}
-
-int XOSView::findy( void ){
-  if ( legend_ )
-    return 10 + textHeight() * nummeters_ * ( caption_ ? 2 : 1 );
-
-  return 15 * nummeters_;
-}
-
 void XOSView::checkOverallResources() {
   //  Check various resource values.
 
@@ -262,24 +242,25 @@ const char *XOSView::winname( void ){
 }
 
 
-void  XOSView::resize( void ){
-  int spacing = vspacing_+1;
-  int topmargin = vmargin_;
-  int rightmargin = hmargin_;
-  int newwidth = width_ - xoff_ - rightmargin;
+void  XOSView::resize(void) {
+  int newwidth;
+  int newheight;
+  int vremain;
 
-  int newheight =
-        (height_ -
-         (topmargin + topmargin + (nummeters_-1)*spacing + nummeters_*yoff_)
-        ) / nummeters_;
-  newheight = (newheight >= 2) ? newheight : 2;
+  newwidth = width_ - xoff_ - hmargin_;
+  newwidth = (newwidth > 2*BORDER_WIDTH+1) ? newwidth : 2*BORDER_WIDTH+1;
 
+  newheight = (height_ - (2*vmargin_ + nummeters_*(vspacing_+yoff_) - vspacing_))
+      / nummeters_;
+  newheight = (newheight > 2*BORDER_WIDTH+1) ? newheight : 2*BORDER_WIDTH+1;
 
-  int counter = 1;
+  vremain = (height_ - 2*vmargin_ - nummeters_*(vspacing_+yoff_+newheight) + vspacing_)/2;
+  vremain = (vremain > 0) ? vremain : 0;
+
+  int counter = 0;
   MeterNode *tmp = meters_;
   while ( tmp != NULL ) {
-    tmp->meter_->resize( xoff_,
-                         topmargin + counter*yoff_ + (counter-1)*(newheight+spacing),
+    tmp->meter_->resize( xoff_, vmargin_+yoff_+vremain + counter*(newheight+vspacing_+yoff_),
                         newwidth, newheight );
     tmp = tmp->next_;
 
@@ -386,7 +367,7 @@ void XOSView::checkArgs (int argc, char** argv) const
 #if ( defined(XOSVIEW_NETBSD) || defined(XOSVIEW_FREEBSD) || \
       defined(XOSVIEW_OPENBSD) || defined(XOSVIEW_DFBSD) )
       case 'N': if (strlen(argv[0]) > 2)
-      		  SetKernelName(argv[0]+2);
+		  SetKernelName(argv[0]+2);
 		else
 		{
 		  SetKernelName(argv[1]);
@@ -397,8 +378,8 @@ void XOSView::checkArgs (int argc, char** argv) const
 #endif
 	      /*  Fall through to default/error case.  */
       default:
-      		std::cerr << "Ignoring unknown option '" << argv[0] << "'.\n";
-	  	break;
+		std::cerr << "Ignoring unknown option '" << argv[0] << "'.\n";
+		break;
     }
     argc--;
     argv++;
@@ -415,7 +396,7 @@ void XOSView::exposeEvent(XExposeEvent &event) {
  * XResizeRequestEvent)
  */
 
-void XOSView::resizeEvent( XConfigureEvent &event ) {
+void XOSView::resizeEvent(XConfigureEvent &event) {
   XOSDEBUG("Got configure event.\n");
 
   if (event.width == width_ && event.height == height_)
@@ -425,7 +406,6 @@ void XOSView::resizeEvent( XConfigureEvent &event ) {
 
   width(event.width);
   height(event.height);
-
   _deferred_resize = true;
 }
 
@@ -454,7 +434,7 @@ void XOSView::visibilityEvent(XVisibilityEvent &event) {
     );
 }
 
-void XOSView::unmapEvent( XUnmapEvent & ev ){
+void XOSView::unmapEvent(XUnmapEvent & ev) {
   /* unclutter creates a subwindow of our window if it hides the cursor,
      we get the unmap event if the cursor is moved again. Don't treat it
      as main window unmap */

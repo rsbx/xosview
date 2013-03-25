@@ -65,7 +65,7 @@ public:
   void drawRectangle( int x, int y, int width, int height )
     { XDrawRectangle( display_, window_, gc_, x, y, width, height ); }
   void drawFilledRectangle( int x, int y, int width, int height )
-    { XFillRectangle( display_, window_, gc_, x, y, width + 1, height + 1 ); }
+    { XFillRectangle( display_, window_, gc_, x, y, width, height ); }
   void drawString( int x, int y, const char *str )
     { XDrawString( display_, window_, gc_, x, y, str, strlen( str ) ); }
   void copyArea( int src_x, int src_y, int width, int height, int dest_x, int dest_y )

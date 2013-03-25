@@ -16,7 +16,9 @@ xosview*background:         navy
 xosview*foreground:         wheat
 xosview*enableStipple:	    False ! Change to true to try beta stipple support.
 xosview*samplesPerSec:      10
-xosview*graphNumCols:       135   ! number of samples shown in a graph
+xosview*horizontalMargin:   4
+xosview*verticalMargin:     4
+xosview*verticalSpacing:    3
 
 ! Load Meter Resources
 
@@ -235,10 +237,6 @@ xosview*RAIDresynctodoColor:  red
 xosview*RAIDresynccompleteColor:  green
 xosview*RAIDPriority:         20
 xosview*RAIDUsedFormat:       percent
-
-xosview*horizontalMargin:      5
-xosview*verticalMargin:        5
-xosview*verticalSpacing:       5
 
 ! Lms Temp
 xosview*lmstemp:	False

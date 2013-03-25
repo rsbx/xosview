@@ -272,7 +272,7 @@ void BitFieldMeter::drawBits( int manditory ){
 	parent_->setForeground( onColor_ );
       else
 	parent_->setForeground( offColor_ );
-      parent_->drawFilledRectangle( x1, y_, w, height_);
+      parent_->drawFilledRectangle( x1, y_, w+1, height_+1);
     }
 
     lastbits_[i] = bits_[i];
@@ -309,7 +309,7 @@ void BitFieldMeter::drawfields( int manditory ){
     if ( manditory || (twidth != lastvals_[i]) || (x != lastx_[i]) ){
       parent_->setForeground( colors_[i] );
       parent_->setStippleN(i%4);
-      parent_->drawFilledRectangle( x, y_, twidth, height_ );
+      parent_->drawFilledRectangle( x, y_, twidth+1, height_+1 );
       parent_->setStippleN(0);	/*  Restore all-bits stipple.  */
       lastvals_[i] = twidth;
       lastx_[i] = x;

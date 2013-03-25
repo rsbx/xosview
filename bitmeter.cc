@@ -4,6 +4,8 @@
 //  This file may be distributed under terms of the GPL
 //
 
+#include <math.h>
+
 #include "bitmeter.h"
 #include "xosview.h"
 
@@ -48,42 +50,31 @@ void BitMeter::checkevent( void ){
   drawBits();
 }
 
-void BitMeter::drawBits( int manditory ){
-  static int pass = 1;
+void BitMeter::drawBits(int manditory) {
+  int x1 = 0, x2;
 
-//  pass = (pass + 1) % 2;
+  // Draw all or none
+  if (!(width_-2*BORDER_WIDTH >= 2*numbits_-1 && height_-2*BORDER_WIDTH > 0))
+    return;
 
-  int x1 = x_ + 0, x2;
+  x1 = 0;
+  for (int i=0; i<numbits_; i++) {
+    x2 = floor((width_-2*BORDER_WIDTH+1)*((double)(i+1)/numbits_) - 0.5)-1;
 
-  for ( int i = 0 ; i < numbits_ ; i++ ){
-    if ( i != (numbits_ - 1) )
-      x2 = x_ + ((i + 1) * (width_+1)) / numbits_ - 1;
-    else
-      x2 = x_ + (width_+1) - 1;
-
-    if ( (bits_[i] != lastbits_[i]) || manditory ){
-      if ( bits_[i] && pass )
-	parent_->setForeground( onColor_ );
-      else
-	parent_->setForeground( offColor_ );
-
-      parent_->drawFilledRectangle( x1, y_, x2 - x1, height_);
+    if (x2 >= x1 && (manditory || (bits_[i] != lastbits_[i]))) {
+      parent_->setForeground( bits_[i] ? onColor_ : offColor_ );
+      parent_->drawFilledRectangle(x_+BORDER_WIDTH+x1, y_+BORDER_WIDTH, x2-x1+1, height_-2*BORDER_WIDTH);
     }
 
     lastbits_[i] = bits_[i];
-
     x1 = x2 + 2;
   }
 }
 
-void BitMeter::draw( void ){
-  parent_->lineWidth( 1 );
+void BitMeter::draw(void) {
   parent_->setForeground( parent_->foreground() );
-  parent_->drawFilledRectangle( x_ -1, y_ - 1, width_ + 2, height_ + 2 );
-
-  parent_->lineWidth( 0 );
-
-  if ( dolegends_ ){
+  parent_->drawFilledRectangle( x_, y_, width_, height_ );
+  if ( dolegends_ ) {
     parent_->setForeground( textcolor_ );
 
     int offset;
@@ -92,12 +83,12 @@ void BitMeter::draw( void ){
     else
       offset = parent_->textWidth( "XXXXX" );
 
-    parent_->drawString( x_ - offset + 1, y_ + height_, title_ );
+    parent_->drawString( x_ - offset, y_ + height_ - 1, title_ );
     parent_->setForeground( onColor_ );
     if(docaptions_)
     {
-      parent_->drawString( x_, y_ - 5, legend_ );
-      }
+      parent_->drawString( x_, y_ - 1, legend_ );
+    }
   }
 
   drawBits( 1 );

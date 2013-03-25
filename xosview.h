@@ -11,6 +11,9 @@
 #include "Xrm.h"  //  For Xrm resource manager class.
 
 
+#define BORDER_WIDTH	1	// FIXME: This should be a resource
+
+
 /*  Take at most n samples per second (default of 10)  */
 extern double MAX_SAMPLES_PER_SECOND;
 
@@ -56,8 +59,6 @@ protected:
   void addmeter( Meter *fm );
   void checkMeterResources( void );
 
-  int findx( void );
-  int findy( void );
   void dolegends( void );
 
   void checkOverallResources();
