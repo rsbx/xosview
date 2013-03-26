@@ -73,14 +73,14 @@ void FieldMeterGraph::drawfields( int manditory )
 
 	// allocate memory for height field graph storage
 	// note: this is done here as it is not certain that both
-	// numfields_ and graphNumCols_ are defined in the constructor
+	// numfields_ and sampleHistoryCount are defined in the constructor
 	if( heightfield_ == NULL )
 	{
-		if( graphNumCols_ )
+		if( sampleHistoryCount )
 		{
-			heightfield_ = new double [(numfields_+1)*graphNumCols_];
+			heightfield_ = new double [(numfields_+1)*sampleHistoryCount];
 
-			for( i = 0; i < graphNumCols_; i++ )
+			for( i = 0; i < sampleHistoryCount; i++ )
 			{
 				for( j = 0; j < numfields_; j++ )
 				{
@@ -93,21 +93,6 @@ void FieldMeterGraph::drawfields( int manditory )
 
 	if (!heightfield_)
 		return;
-
-	// check current position here and slide graph if necessary
-	// FIXME: This should be eliminated and the heightfield treated
-	//   as a circular buffer instead.
-	if( graphpos_ >= graphNumCols_ )
-	{
-		for( i = 0; i < graphNumCols_-1; i++ )
-		{
-			for( j = 0; j <= numfields_; j++ )
-			{
-				heightfield_[i*(numfields_+1)+j] = heightfield_[(i+1)*(numfields_+1)+j];
-			}
-		}
-		graphpos_ = graphNumCols_ - 1;
-	}
 
 	total = 0.0;
 	for (i=0; i< numfields_; i++)
@@ -125,11 +110,11 @@ void FieldMeterGraph::drawfields( int manditory )
 
 	// store current values for graphing
 	for( i = 0; i <= numfields_; i++ )
-		heightfield_[graphpos_*(numfields_+1)+i] = (fields_[i] > 0.0) ? fields_[i]/total : 0.0;
+		heightfield_[sampleIndex*(numfields_+1)+i] = (fields_[i] > 0.0) ? fields_[i]/total : 0.0;
 
 	currWinState = parent_->getWindowVisibilityState();
 
-	if (!(width_ > 2*BORDER_WIDTH && height_ > 2*BORDER_WIDTH && total > 0.0))
+	if (!(width_ > 2*BORDER_WIDTH && height_ > 2*BORDER_WIDTH))
 		return;
 
 	// Try to avoid having to redraw everything.
@@ -140,20 +125,23 @@ void FieldMeterGraph::drawfields( int manditory )
 		int sheight = height_ - 2*BORDER_WIDTH;
 		if( swidth > 0 && sheight > 0 )
 			parent_->copyArea( sx, y_+BORDER_WIDTH, swidth, sheight, x_+BORDER_WIDTH, y_+BORDER_WIDTH );
-		drawBar( graphNumCols_ - 1 );
-	} else {
+		drawBar(sampleHistoryCount-1, sampleIndex);
+	}
+	else
+	{
 		// need to draw entire graph for some reason
-		for( i = 0; i < graphNumCols_; i++ ) {
-			drawBar( i );
+		for( i = 0; i < sampleHistoryCount; i++ )
+		{
+			drawBar(i, (sampleIndex+1+i)%sampleHistoryCount);
 		}
 	}
 
 	lastWinState = currWinState;
-	graphpos_++;
+	sampleIndex = (sampleIndex+1)%sampleHistoryCount;
 }
 
 
-void FieldMeterGraph::drawBar(unsigned int sample)
+void FieldMeterGraph::drawBar(unsigned int column, unsigned int sample)
 {
 	unsigned int i;
 	int start, end;
@@ -174,7 +162,7 @@ void FieldMeterGraph::drawBar(unsigned int sample)
 		{
 			parent_->setForeground(colors_[i]);
 			parent_->setStippleN(i%4);
-			parent_->drawFilledRectangle(x_+BORDER_WIDTH+sample, y_+height_-BORDER_WIDTH-1-end, 1, end-start+1);
+			parent_->drawFilledRectangle(x_+BORDER_WIDTH+column, y_+height_-BORDER_WIDTH-1-end, 1, end-start+1);
 			parent_->setStippleN(0);
 		}
 		start = end+1;
@@ -184,8 +172,8 @@ void FieldMeterGraph::drawBar(unsigned int sample)
 
 void FieldMeterGraph::setNumCols(unsigned int n)
 {
-	graphNumCols_ = n;
-	graphpos_ = graphNumCols_-1;
+	sampleHistoryCount = n;
+	sampleIndex = 0;
 
         // FIXME: This should really allocate the new array; salvage what it
         //   can from the old array; then delete the old array.

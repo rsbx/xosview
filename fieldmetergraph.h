@@ -28,8 +28,8 @@ protected:
   virtual void drawfields(int manditory = 0);
 
   int useGraph_;
-  unsigned int graphNumCols_;
-  unsigned int graphpos_;
+  unsigned int sampleHistoryCount;
+  unsigned int sampleIndex;
   /*  There's some sort of corruption going on -- we can't have
    *  variables after the heightfield_ below, otherwise they get
    *  corrupted???  */
@@ -38,7 +38,7 @@ protected:
 private:
   int last_x, last_y, last_width, last_height;
   void checkResize(void);
-  void drawBar(unsigned int i);
+  void drawBar(unsigned int column, unsigned int sampleIndex);
   enum XOSView::windowVisibilityState lastWinState;
 
 };
