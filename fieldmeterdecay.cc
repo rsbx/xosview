@@ -41,7 +41,7 @@
 
 
 FieldMeterDecay::FieldMeterDecay( XOSView *parent,
-                int numfields, const char *title,
+                unsigned int numfields, const char *title,
                 const char *legend, int docaptions, int dolegends,
                 int dousedlegends )
 	: FieldMeter (parent, numfields, title, legend, docaptions, dolegends,
@@ -67,7 +67,7 @@ FieldMeterDecay::~FieldMeterDecay(void) {
 }
 
 void FieldMeterDecay::setNumDecayFields(void) {
-  int i;
+  unsigned int i;
 
   delete[] decay_;
   delete[] last_f_start;
@@ -75,31 +75,34 @@ void FieldMeterDecay::setNumDecayFields(void) {
   delete[] last_d_start;
   delete[] last_d_end;
 
-  decay_ = new double[numfields_];
-  last_f_start = new int[numfields_];
-  last_f_end = new int[numfields_];
-  last_d_start = new int[numfields_];
-  last_d_end = new int[numfields_];
+  decay_ = new double[numfields_+1];
+  last_f_start = new int[numfields_+1];
+  last_f_end = new int[numfields_+1];
+  last_d_start = new int[numfields_+1];
+  last_d_end = new int[numfields_+1];
 
-  for (i=0; i<numfields_; i++) {
+  for (i=0; i<=numfields_; i++) {
     decay_[i] = 0.0;
     last_f_start[i] = -1;
     last_f_end[i] = -1;
     last_d_start[i] = -1;
     last_d_end[i] = -1;
   }
+  decay_[numfields_] = 1.0;
 
   firsttime_ = 1;
 }
 
-void FieldMeterDecay::setNumFields(int n) {
+
+void FieldMeterDecay::setNumFields(unsigned int n) {
   FieldMeter::setNumFields(n);
   FieldMeterDecay::setNumDecayFields();
 }
 
+
 void FieldMeterDecay::drawfields(int manditory)
   {
-  int i;
+  unsigned int i;
   int start, end;
   int halfheight;
   double runningtotal;
@@ -123,78 +126,87 @@ void FieldMeterDecay::drawfields(int manditory)
       total_f += fields_[i];
     }
 
-  if (firsttime_ && total_f > 0.0)
+  if (!(total_f > 0.0))
+    {
+    fields_[numfields_] = 1.0;
+    total_f = 1.0;
+    }
+  else
+    {
+    fields_[numfields_] = 0.0;
+    }
+
+  if (firsttime_)
     {
     firsttime_ = 0;
     manditory = 1;
-    for (int i = 0; i < numfields_; i++)
+    for (i=0; i<=numfields_; i++)
       {
       decay_[i] = (fields_[i] > 0.0) ? fields_[i]/total_f : 0.0;
       }
     }
 
   total_d = 0.0;
-  for (i=0; i< numfields_; i++)
+  for (i=0; i<=numfields_; i++)
     {
     decay_[i] *= ALPHA;
-    if (total_f > 0.0 && fields_[i] > 0.0)	// If this is false, decay_[] becomes denormalized but will recover
+    if (fields_[i] > 0.0)
       decay_[i] += (1-ALPHA)*(fields_[i]/total_f);
     total_d += decay_[i];
+    }
+
+  if (!(total_d > 0.0))
+    {
+    decay_[numfields_] = 1.0;
+    total_d = 1.0;
     }
 
   halfheight = height_/2-BORDER_WIDTH;
   halfheight = (halfheight > 0) ? halfheight : 0;
 
-  if (width_-2*BORDER_WIDTH > 0 && height_-2*BORDER_WIDTH-halfheight > 0 && total_f > 0.0)
+  if (width_-2*BORDER_WIDTH > 0 && height_-2*BORDER_WIDTH-halfheight > 0)
     {
     start = 0;
     runningtotal = 0.0;
-    for (i=0; i< numfields_; i++)
+    for (i=0; i<=numfields_; i++)
       {
       if (fields_[i] > 0.0)
         runningtotal += fields_[i];
 
-      if (total_f > 0.0)
+      end = floor((width_-2*BORDER_WIDTH)*(runningtotal/total_f) - 0.5);
+      if (end >= start && (manditory || (start != last_f_start[i]) || (end != last_f_end[i])))
         {
-        end = floor((width_-2*BORDER_WIDTH)*(runningtotal/total_f) - 0.5);
-        if (end >= start && (manditory || (start != last_f_start[i]) || (end != last_f_end[i])))
-          {
-          parent_->setForeground(colors_[i]);
-          parent_->setStippleN(i%4);
-          parent_->drawFilledRectangle(x_+start+BORDER_WIDTH, y_+BORDER_WIDTH, end-start+1, height_-2*BORDER_WIDTH-halfheight);
-          parent_->setStippleN(0);
-          }
-        last_f_start[i] = start;
-        last_f_end[i] = end;
-        start = end+1;
+        parent_->setForeground(colors_[i]);
+        parent_->setStippleN(i%4);
+        parent_->drawFilledRectangle(x_+start+BORDER_WIDTH, y_+BORDER_WIDTH, end-start+1, height_-2*BORDER_WIDTH-halfheight);
+        parent_->setStippleN(0);
         }
+      last_f_start[i] = start;
+      last_f_end[i] = end;
+      start = end+1;
       }
     }
 
   total_d = 1.0;	// The decay_[] array is normalized so that the sum is always 1.0
-  if (width_-2 > 0 && halfheight > 0 && total_d > 0.0)
+  if (width_-2 > 0 && halfheight > 0)
     {
     start = 0;
     runningtotal = 0.0;
-    for (i=0; i< numfields_; i++)
+    for (i=0; i<=numfields_; i++)
       {
-      if (decay_[i] > 0.0)
-        runningtotal += decay_[i];
+      runningtotal += decay_[i];
 
-      if (total_d > 0.0)
+      end = floor((width_-2*BORDER_WIDTH)*(runningtotal/total_d) - 0.5);
+      if (end >= start && (manditory || (start != last_d_start[i]) || (end != last_d_end[i])))
         {
-        end = floor((width_-2*BORDER_WIDTH)*(runningtotal/total_d) - 0.5);
-        if (end >= start && (manditory || (start != last_d_start[i]) || (end != last_d_end[i])))
-          {
-          parent_->setForeground(colors_[i]);
-          parent_->setStippleN(i%4);
-          parent_->drawFilledRectangle(x_+start+BORDER_WIDTH, y_+BORDER_WIDTH+height_-2*BORDER_WIDTH-halfheight, end-start+1, halfheight);
-          parent_->setStippleN(0);
-          }
-        last_d_start[i] = start;
-        last_d_end[i] = end;
-        start = end+1;
+        parent_->setForeground(colors_[i]);
+        parent_->setStippleN(i%4);
+        parent_->drawFilledRectangle(x_+start+BORDER_WIDTH, y_+BORDER_WIDTH+height_-2*BORDER_WIDTH-halfheight, end-start+1, halfheight);
+        parent_->setStippleN(0);
         }
+      last_d_start[i] = start;
+      last_d_end[i] = end;
+      start = end+1;
       }
     }
   }

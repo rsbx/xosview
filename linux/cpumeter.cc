@@ -27,6 +27,7 @@ CPUMeter::CPUMeter(XOSView *parent, const char *cpuID)
     for ( int j = 0 ; j < 10 ; j++ )
       cputime_[i][j] = 0;
   cpuindex_ = 0;
+  fieldcount = 0;
   kernel_ = getkernelversion();
   if (kernel_ < 2006000)
     statfields_ = 4;
@@ -217,7 +218,7 @@ void CPUMeter::checkResources( void ){
   lgnd += "/IDLE";
 
   legend(lgnd.c_str());
-  numfields_ = field; // can't use setNumFields as it destroys the color mapping
+  fieldcount = field;
 }
 
 void CPUMeter::checkevent( void ){
@@ -257,7 +258,7 @@ void CPUMeter::getcputime( void ){
 
   int oldindex = (cpuindex_+1)%2;
   // zero all the fields
-  memset(fields_, 0, numfields_*sizeof(fields_[0]));
+  memset(fields_, 0, fieldcount*sizeof(fields_[0]));
   for ( int i = 0 ; i < statfields_ ; i++ ){
     int time = cputime_[cpuindex_][i] - cputime_[oldindex][i];
     if (time < 0)    // counters in /proc/stat do sometimes go backwards
@@ -268,7 +269,7 @@ void CPUMeter::getcputime( void ){
   }
 
   if (total_){
-    setUsed (total_ - fields_[numfields_ - 1], total_); // any non-idle time
+    setUsed (total_ - fields_[fieldcount - 1], total_); // any non-idle time
     cpuindex_ = (cpuindex_ + 1) % 2;
   }
 }

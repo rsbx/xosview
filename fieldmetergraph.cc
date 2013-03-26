@@ -30,7 +30,7 @@
 
 
 FieldMeterGraph::FieldMeterGraph( XOSView *parent,
-		int numfields, const char *title,
+		unsigned int numfields, const char *title,
 		const char *legend, int docaptions, int dolegends,
 		int dousedlegends )
 	: FieldMeterDecay (parent, numfields, title, legend, docaptions, dolegends, dousedlegends)
@@ -54,7 +54,7 @@ FieldMeterGraph::~FieldMeterGraph( void )
 
 void FieldMeterGraph::drawfields( int manditory )
 {
-	int i,j;
+	unsigned int i,j;
         double total;
 	enum XOSView::windowVisibilityState currWinState;
 
@@ -76,19 +76,17 @@ void FieldMeterGraph::drawfields( int manditory )
 	// numfields_ and graphNumCols_ are defined in the constructor
 	if( heightfield_ == NULL )
 	{
-		if( numfields_ > 0 && graphNumCols_ > 0 )
+		if( graphNumCols_ )
 		{
-			heightfield_ = new double [numfields_*graphNumCols_];
+			heightfield_ = new double [(numfields_+1)*graphNumCols_];
 
 			for( i = 0; i < graphNumCols_; i++ )
 			{
 				for( j = 0; j < numfields_; j++ )
 				{
-					if( j < numfields_-1 )
-						heightfield_[i*numfields_+j] = 0.0;
-					else
-						heightfield_[i*numfields_+j] = 1.0;
+					heightfield_[i*(numfields_+1)+j] = 0.0;
 				}
+				heightfield_[i*(numfields_+1)+numfields_] = 1.0;
 			}
 		}
 	}
@@ -103,21 +101,31 @@ void FieldMeterGraph::drawfields( int manditory )
 	{
 		for( i = 0; i < graphNumCols_-1; i++ )
 		{
-			for( j = 0; j < numfields_; j++ )
+			for( j = 0; j <= numfields_; j++ )
 			{
-				heightfield_[i*numfields_+j] = heightfield_[(i+1)*numfields_+j];
+				heightfield_[i*(numfields_+1)+j] = heightfield_[(i+1)*(numfields_+1)+j];
 			}
 		}
 		graphpos_ = graphNumCols_ - 1;
 	}
 
 	total = 0.0;
-	for (i=0; i<numfields_; i++)
-		total += fields_[i] > 0.0 ? fields_[i] : 0.0;
+	for (i=0; i< numfields_; i++)
+		total += (fields_[i] > 0.0) ? fields_[i] : 0.0;
 
-	// get current values to be plotted
-	for( i = 0; i < numfields_; i++ )
-		heightfield_[graphpos_*numfields_+i] = total > 0.0 && fields_[i] > 0.0 ? fields_[i]/total : 0.0;
+	if (!(total > 0.0))
+	{
+		fields_[numfields_] = 1.0;
+		total = 1.0;
+	}
+	else
+	{
+		fields_[numfields_] = 0.0;
+	}
+
+	// store current values for graphing
+	for( i = 0; i <= numfields_; i++ )
+		heightfield_[graphpos_*(numfields_+1)+i] = (fields_[i] > 0.0) ? fields_[i]/total : 0.0;
 
 	currWinState = parent_->getWindowVisibilityState();
 
@@ -145,23 +153,22 @@ void FieldMeterGraph::drawfields( int manditory )
 }
 
 
-void FieldMeterGraph::drawBar(int sample)
+void FieldMeterGraph::drawBar(unsigned int sample)
 {
-	int i;
+	unsigned int i;
 	int start, end;
 	double runningtotal = 0.0;
 	double total = 0.0;
 
-	for (i=0; i<numfields_; i++)
+	for (i=0; i<=numfields_; i++)
 	{
-		if (heightfield_[sample*numfields_+i] > 0.0)
-			total += heightfield_[sample*numfields_+i];
+		total += heightfield_[sample*(numfields_+1)+i];
 	}
+
 	start = 0;
-	for (i=0; i<numfields_; i++)
+	for (i=0; i<=numfields_; i++)
 	{
-		if (heightfield_[sample*numfields_+i] > 0.0)
-			runningtotal += heightfield_[sample*numfields_+i];
+		runningtotal += heightfield_[sample*(numfields_+1)+i];
 		end = floor((height_-2*BORDER_WIDTH)*(runningtotal/total) - 0.5);
 		if (end >= start)
 		{
@@ -175,7 +182,7 @@ void FieldMeterGraph::drawBar(int sample)
 }
 
 
-void FieldMeterGraph::setNumCols( int n )
+void FieldMeterGraph::setNumCols(unsigned int n)
 {
 	graphNumCols_ = n;
 	graphpos_ = graphNumCols_-1;
@@ -187,7 +194,7 @@ void FieldMeterGraph::setNumCols( int n )
 }
 
 
-void FieldMeterGraph::setNumFields(int n)
+void FieldMeterGraph::setNumFields(unsigned int n)
 {
 	FieldMeterDecay::setNumFields(n);
 	delete [] heightfield_;

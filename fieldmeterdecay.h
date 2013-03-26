@@ -21,15 +21,15 @@
 
 class FieldMeterDecay : public FieldMeter {
 public:
-  FieldMeterDecay( XOSView *parent, int numfields,
+  FieldMeterDecay( XOSView *parent, unsigned int numfields,
               const char *title = "", const char *legend = "",
               int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
   virtual ~FieldMeterDecay( void );
 
 protected:
-  virtual void setNumFields(int n);
+  virtual void setNumFields(unsigned int n);
   virtual void setNumDecayFields(void);
-  virtual void drawfields( int manditory = 0 );
+  virtual void drawfields(int manditory = 0);
 
   int dodecay_;
   int firsttime_;  //  Used to set up decaying fields right the first time.

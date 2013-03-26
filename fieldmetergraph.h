@@ -17,19 +17,19 @@
 
 class FieldMeterGraph : public FieldMeterDecay {
 public:
-  FieldMeterGraph( XOSView *parent, int numfields,
+  FieldMeterGraph( XOSView *parent, unsigned int numfields,
               const char *title = "", const char *legend = "",
               int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
   virtual ~FieldMeterGraph( void );
 
 protected:
-  virtual void setNumCols( int n );
-  virtual void setNumFields(int n);
-  virtual void drawfields( int manditory = 0 );
+  virtual void setNumCols(unsigned int n);
+  virtual void setNumFields(unsigned int n);
+  virtual void drawfields(int manditory = 0);
 
   int useGraph_;
-  int graphNumCols_;
-  int graphpos_;
+  unsigned int graphNumCols_;
+  unsigned int graphpos_;
   /*  There's some sort of corruption going on -- we can't have
    *  variables after the heightfield_ below, otherwise they get
    *  corrupted???  */
@@ -38,7 +38,7 @@ protected:
 private:
   int last_x, last_y, last_width, last_height;
   void checkResize(void);
-  void drawBar( int i );
+  void drawBar(unsigned int i);
   enum XOSView::windowVisibilityState lastWinState;
 
 };

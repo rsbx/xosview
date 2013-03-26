@@ -22,6 +22,7 @@ public:
   static int countCPUs(void);
   static const char *cpuStr(int num);
   static int getkernelversion(void);
+
 protected:
   int _lineNum;
   unsigned long long cputime_[2][10];
@@ -32,7 +33,10 @@ protected:
   void getcputime(void);
   int findLine(const char *cpuID);
   const char *toUpper(const char *str);
+
 private:
+  unsigned int fieldcount;
+
 };
 
 #endif

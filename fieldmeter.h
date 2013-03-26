@@ -12,13 +12,15 @@
 
 class FieldMeter : public Meter {
 public:
-  FieldMeter( XOSView *parent, int numfields,
+  FieldMeter( XOSView *parent, unsigned int numfields,
 	      const char *title = "", const char *legend = "",
 	      int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
   virtual ~FieldMeter( void );
 
-  void setfieldcolor( int field, const char *color );
-  void setfieldcolor( int field, unsigned long color);
+  void setfieldcolor(unsigned int field, const char *color);
+  void setfieldcolor(unsigned int field, unsigned long color);
+  void setbaddatafieldcolor(const char *color);
+  void setbaddatafieldcolor(unsigned long color);
   void docaptions( int val ) { docaptions_ = val; }
   void dolegends( int val ) { dolegends_ = val; }
   void dousedlegends( int val ) { dousedlegends_ = val; }
@@ -37,7 +39,7 @@ public:
 protected:
   enum UsedType { INVALID_0, FLOAT, PERCENT, AUTOSCALE, INVALID_TAIL };
 
-  int numfields_;
+  unsigned int numfields_;
   double *fields_;
   double total_, used_, lastused_;
   int lastusedwidth;
@@ -54,10 +56,11 @@ protected:
   bool checkX(int x, int width) const;
 
   virtual void drawfields( int manditory = 0 );
-  virtual void setNumFields(int n);
+  virtual void setNumFields(unsigned int n);
 
 private:
   Timer _timer;
+  bool baddatacolorset;
 
 protected:
   void IntervalTimerStart() { _timer.start(); }

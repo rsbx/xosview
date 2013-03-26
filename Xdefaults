@@ -19,6 +19,7 @@
 *horizontalMargin:   4
 *verticalMargin:     4
 *verticalSpacing:    3
+*BadDataColor:       grey50
 
 ! Load Meter Resources
 

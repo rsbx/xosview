@@ -17,7 +17,7 @@
 #define LEGEND_FIELD_SEP	"/"
 
 
-FieldMeter::FieldMeter( XOSView *parent, int numfields, const char *title,
+FieldMeter::FieldMeter( XOSView *parent, unsigned int numfields, const char *title,
                         const char *legend, int docaptions, int dolegends,
                         int dousedlegends )
 : Meter(parent, title, legend, docaptions, dolegends, dousedlegends){
@@ -36,8 +36,8 @@ FieldMeter::FieldMeter( XOSView *parent, int numfields, const char *title,
   setNumFields(numfields);
 }
 
-void
-FieldMeter::disableMeter ( )
+
+void FieldMeter::disableMeter ( )
 {
   setNumFields(1);
   setfieldcolor (0, "gray");
@@ -109,19 +109,28 @@ void FieldMeter::setUsed (double val, double total)
 }
 
 
-void FieldMeter::reset( void ){
-  for ( int i = 0 ; i < numfields_ ; i++ )
-    last_start[i] = last_end[i] = -1;
+void FieldMeter::setfieldcolor(unsigned int field, const char *color) {
+  setfieldcolor(field, parent_->allocColor(color));
 }
 
 
-void FieldMeter::setfieldcolor( int field, const char *color ){
-  colors_[field] = parent_->allocColor( color );
+void FieldMeter::setfieldcolor(unsigned int field, unsigned long color) {
+  if (field < numfields_)
+    colors_[field] = color;
+
+  if (!baddatacolorset)
+    setbaddatafieldcolor(parent_->getResource("BadDataColor"));
 }
 
 
-void FieldMeter::setfieldcolor( int field, unsigned long color ) {
-  colors_[field] = color;
+void FieldMeter::setbaddatafieldcolor(const char *color) {
+  setbaddatafieldcolor(parent_->allocColor(color));
+}
+
+
+void FieldMeter::setbaddatafieldcolor(unsigned long color) {
+  colors_[numfields_] = color;
+  baddatacolorset = true;
 }
 
 
@@ -148,7 +157,7 @@ void FieldMeter::draw( void ){
 
 void FieldMeter::drawlegend(void) {
   int x = 0;
-  int fieldcount = 0;
+  unsigned int fieldcount = 0;
   char *p0;
   char *p1;
   char *p2;
@@ -294,7 +303,7 @@ void FieldMeter::update(void) {
 
 
 void FieldMeter::drawfields(int manditory) {
-  int i;
+  unsigned int i;
   int start, end;
   double runningtotal = 0.0;
   double total = 0.0;
@@ -302,17 +311,25 @@ void FieldMeter::drawfields(int manditory) {
   if (dousedlegends_)
     drawused( manditory );
 
+  if (!(width_ > 2*BORDER_WIDTH && height_ > 2*BORDER_WIDTH)) {
+    return;
+  }
+
   for (i=0; i<numfields_; i++) {
     if (fields_[i] > 0.0)
       total += fields_[i];
     }
 
-  if (!(width_ > 2*BORDER_WIDTH && height_ > 2*BORDER_WIDTH && total > 0.0)) {
-    return;
+  if (!(total > 0.0)) {
+    fields_[numfields_] = 1.0;
+    total = 1.0;
+  }
+  else {
+    fields_[numfields_] = 0.0;
   }
 
   start = 0;
-  for (i=0; i<numfields_; i++) {
+  for (i=0; i<=numfields_; i++) {
     if (fields_[i] > 0.0)
       runningtotal += fields_[i];
     end = floor((width_-2*BORDER_WIDTH)*(runningtotal/total) - 0.5);
@@ -329,41 +346,22 @@ void FieldMeter::drawfields(int manditory) {
 }
 
 
-void FieldMeter::setNumFields(int n) {
+void FieldMeter::setNumFields(unsigned int n) {
   numfields_ = n;
   delete[] fields_;
   delete[] colors_;
   delete[] last_start;
   delete[] last_end;
-  fields_ = new double[numfields_];
-  colors_ = new unsigned long[numfields_];
-  last_start = new int[numfields_];
-  last_end = new int[numfields_];
+  fields_ = new double[numfields_+1];
+  colors_ = new unsigned long[numfields_+1];
+  last_start = new int[numfields_+1];
+  last_end = new int[numfields_+1];
+  baddatacolorset = false;
 
   total_ = 0;
-  for ( int i = 0 ; i < numfields_ ; i++ ){
-    fields_[i] = 0.0;             /* egcs 2.91.66 bug !? don't do this and */
-    last_start[i] = last_end[i] = -1; /* that in a single statement or it'll   */
-                                  /* overwrite too much with 0 ...         */
-				  /* Thomas Waldmann ( tw@com-ma.de )      */
+  for (unsigned int i=0; i<=numfields_; i++) {
+    fields_[i] = 0.0;
+    last_start[i] = last_end[i] = -1;
   }
-}
-
-
-bool FieldMeter::checkX(int x, int width) const {
-  if ((x < x_) || (x + width < x_)
-      || (x > x_ + width_) || (x + width > x_ + width_)){
-    std::cerr << "FieldMeter::checkX() : bad horiz values for meter : "
-         << name() << std::endl;
-
-    std::cerr <<"value "<<x<<", width "<<width<<", total_ = "<<total_<<std::endl;
-
-    for (int i = 0 ; i < numfields_ ; i++)
-      std::cerr <<"fields_[" <<i <<"] = " <<fields_[i] <<",";
-    std::cerr <<std::endl;
-
-    return false;
-  }
-
-  return true;
+  fields_[numfields_] = 1.0;
 }
