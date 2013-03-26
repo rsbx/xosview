@@ -198,7 +198,6 @@
 *wirelessColors*Fair:                orange
 ! was *GoodQualityColor
 *wirelessColors*Good:                seagreen
-*wirelessColors*Offline:             grey50
 ! was *wirelessUsedColor
 *wirelessColors*Idle:                aquamarine
 *wirelessRange*Granularity:          30
@@ -207,7 +206,6 @@
 ! *wirelessColors.wlan0.Poor:        red
 ! *wirelessColors.wlan0.Fair:        orange
 ! *wirelessColors.wlan0.Good:        green
-! *wirelessColors.wlan0.Offline:     black
 ! *wirelessColors.wlan0.Idle:        white
 ! *wirelessRange.wlan0.Granularity:  70
 ! *wirelessRange.wlan0.Ratio:        0.75

@@ -52,7 +52,7 @@ static struct wif_info *wif_array = NULL;
 
 
 WirelessMeter::WirelessMeter(XOSView *parent, int ID, const char *wlID)
-		: FieldMeterGraph(parent, 5, wlID, "Poor/Fair/Good/Offl/Free", 1, 1, 0), _number(ID)
+		: FieldMeterGraph(parent, 4, wlID, "Poor/Fair/Good/Free", 1, 1, 0), _number(ID)
 	{
 	if (wif_count < 0)
 		{
@@ -81,9 +81,9 @@ WirelessMeter::~WirelessMeter(void)
 
 void WirelessMeter::checkResources(void)
 	{
-	int i;
+	unsigned int i;
 	static char buffer[256];
-	static const char *colorlist[5] = { "Poor", "Fair", "Good", "Offline", "Idle" };
+	static const char *colorlist[] = { "Poor", "Fair", "Good", "Idle" };
 
 	FieldMeterGraph::checkResources();
 
@@ -92,7 +92,7 @@ void WirelessMeter::checkResources(void)
 	SetUsedFormat(parent_->getResource("wirelessUsedFormat"));
 	useGraph_ = parent_->isResourceTrue("wirelessGraph");
 
-	for (i=0; i<5; i++)
+	for (i=0; i<4; i++)
 		{
 		snprintf(buffer, 255, "wirelessColors.%s.%s", iwrq.ifr_name, colorlist[i]);
 		buffer[255] = '\0';
@@ -356,8 +356,7 @@ void WirelessMeter::update_stats(void)
 		val_min = 0;
 		val_max = 1;
 		current = val_max;
-		fields_[0] = fields_[1] = fields_[2] = 0;
-		fields_[3] = 1;
+		fields_[0] = fields_[1] = fields_[2] = 0.0;
 		used = 0;
 		}
 	else
@@ -385,15 +384,15 @@ void WirelessMeter::update_stats(void)
 			val_fair = IMID(val_good, val_min, range_ratio);
 			}
 
-		fields_[0] = fields_[1] = fields_[2] = fields_[3] = 0;
+		fields_[0] = fields_[1] = fields_[2] = 0.0;
 		fields_[(current >= val_good) ? 2 : (current >= val_fair) ? 1 : 0]
 				= (double)(current - val_min)/(val_max - val_min);
 		used = current - val_min;
 		}
 
-	fields_[4] = (double)(val_max - current)/(val_max - val_min);
+	fields_[3] = (double)(val_max - current)/(val_max - val_min);
 	total_ = 1.0;
-	setUsed (used, total_);
+	setUsed(used, total_);
 	}
 
 
