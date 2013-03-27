@@ -39,6 +39,10 @@ FieldMeterGraph::FieldMeterGraph( XOSView *parent,
 	heightfield_ = NULL;
 	lastWinState = XOSView::OBSCURED;
 
+	sampleHistoryCount = 0;
+	sampleIndex = 0;
+	heightfield_ = NULL;
+
 	last_x = -1;
 	last_y = -1;
 	last_width = -1;
@@ -54,7 +58,7 @@ FieldMeterGraph::~FieldMeterGraph( void )
 
 void FieldMeterGraph::updateMeterHistory(void)
 {
-	unsigned int i,j;
+	unsigned int i;
 	double total;
 
 	if( !useGraph_ )
@@ -65,35 +69,12 @@ void FieldMeterGraph::updateMeterHistory(void)
 		return;
 	}
 
-	if (!sampleHistoryCount)
+	if (!sampleHistoryCount || !heightfield_)
 	{
 		return;
 	}
 
 	sampleIndex = (sampleIndex+1)%sampleHistoryCount;
-
-	// allocate memory for height field graph storage
-	// note: this is done here as it is not certain that both
-	// numfields_ and sampleHistoryCount are defined in the constructor
-	if( heightfield_ == NULL )
-	{
-		if( sampleHistoryCount )
-		{
-			heightfield_ = new double [(numfields_+1)*sampleHistoryCount];
-
-			for( i = 0; i < sampleHistoryCount; i++ )
-			{
-				for( j = 0; j < numfields_; j++ )
-				{
-					heightfield_[i*(numfields_+1)+j] = 0.0;
-				}
-				heightfield_[i*(numfields_+1)+numfields_] = 1.0;
-			}
-		}
-	}
-
-	if (!heightfield_)
-		return;
 
 	total = 0.0;
 	for (i=0; i< numfields_; i++)
@@ -130,8 +111,6 @@ void FieldMeterGraph::drawfields( int manditory )
 
 	if ( dousedlegends_ )
 		drawused( manditory );
-
-	checkResize();
 
 	if (!heightfield_ || !sampleHistoryCount || !(width_ > 2*BORDER_WIDTH && height_ > 2*BORDER_WIDTH))
 		return;
@@ -192,13 +171,53 @@ void FieldMeterGraph::drawBar(unsigned int column, unsigned int sample)
 
 void FieldMeterGraph::setNumCols(unsigned int n)
 {
-	sampleHistoryCount = n;
-	sampleIndex = 0;
+	unsigned int cols_old, cols_new, cols_copy;
+	unsigned int col, field, pos;
+	unsigned int i;
+	double *heightfield_old, *heightfield_new;
 
-	// FIXME: This should really allocate the new array; salvage what it
-	//   can from the old array; then delete the old array.
-	delete [] heightfield_;
-	heightfield_ = NULL;
+	if (n == sampleHistoryCount)
+		return;
+
+	cols_old = sampleHistoryCount;
+	cols_new = n;
+	cols_copy = (cols_new < cols_old) ? cols_new : cols_old;
+
+
+	heightfield_old = heightfield_;
+	heightfield_new = new double [cols_new*(numfields_+1)];
+
+	// Invalidate history in any new space
+	col = 0;
+	for (i=0; i<cols_new-cols_copy; i++)
+	{
+		for (field=0; field<numfields_; field++)
+		{
+			heightfield_new[col*(numfields_+1)+field] = 0.0;
+		}
+		heightfield_new[col*(numfields_+1)+numfields_] = 1.0;
+		col++;
+	}
+
+	if (cols_copy)
+		pos = (sampleIndex+cols_old-cols_copy+1)%cols_old;
+
+	for (i=0; i<cols_copy; i++)
+	{
+		for (field=0; field<=numfields_; field++)
+		{
+			heightfield_new[col*(numfields_+1)+field]
+					= heightfield_old[pos*(numfields_+1)+field];
+		}
+		col++;
+		pos = (pos+1)%cols_old;
+	}
+
+	delete [] heightfield_old;
+
+	sampleHistoryCount = n;
+	sampleIndex = n-1;
+	heightfield_ = heightfield_new;
 }
 
 
@@ -210,9 +229,14 @@ void FieldMeterGraph::setNumFields(unsigned int n)
 }
 
 
-void FieldMeterGraph::checkResize(void)
+void FieldMeterGraph::resize(int x, int y, int width, int height)
 {
 	unsigned int cols = 0;
+
+	FieldMeterDecay::resize(x, y, width, height);
+
+	if(!useGraph_)
+		return;
 
 	if (x_ == last_x && y_ == last_y && width_ == last_width && height_ == last_height)
 		return;

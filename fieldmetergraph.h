@@ -28,6 +28,7 @@ protected:
   virtual void setNumCols(unsigned int n);
   virtual void setNumFields(unsigned int n);
   virtual void drawfields(int manditory = 0);
+  virtual void resize(int x, int y, int width, int height);
 
   int useGraph_;
   unsigned int sampleHistoryCount;
@@ -39,7 +40,6 @@ protected:
 
 private:
   int last_x, last_y, last_width, last_height;
-  void checkResize(void);
   void drawBar(unsigned int column, unsigned int sampleIndex);
   enum XOSView::windowVisibilityState lastWinState;
 

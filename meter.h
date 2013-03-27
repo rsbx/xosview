@@ -18,8 +18,8 @@ public:
 	 int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
   virtual ~Meter( void );
 
-  virtual const char *name( void ) const { return "Meter"; }
-  void resize( int x, int y, int width, int height );
+  virtual const char *name(void) const { return "Meter"; }
+  virtual void resize(int x, int y, int width, int height);
   virtual void checkevent(void) = 0;
   virtual void drawMeterDisplay(void) = 0;
   virtual void updateMeterDisplay(void) = 0;
