@@ -20,9 +20,9 @@ public:
 
   virtual const char *name( void ) const { return "Meter"; }
   void resize( int x, int y, int width, int height );
-  virtual void checkevent( void ) = 0;
-  virtual void draw( void ) = 0;
-  virtual void update( void ) = 0;
+  virtual void checkevent(void) = 0;
+  virtual void drawMeterDisplay(void) = 0;
+  virtual void updateMeterDisplay(void) = 0;
   void title( const char *title );
   const char *title( void ) { return title_; }
   void legend( const char *legend );
@@ -44,7 +44,8 @@ public:
   int getWidth() const { return width_; }
   int getHeight() const { return height_; }
 
-  virtual void checkResources( void );
+  virtual void checkResources(void) = 0;
+  virtual void updateMeterHistory(void) = 0;
 
 protected:
   XOSView *parent_;

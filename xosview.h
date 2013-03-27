@@ -71,6 +71,7 @@ protected:
   void resize(void);
   void draw(void);
   void update(void);
+  void history(void);
 
 private:
 

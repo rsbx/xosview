@@ -22,6 +22,8 @@ public:
               int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
   virtual ~FieldMeterGraph( void );
 
+  virtual void updateMeterHistory(void);
+
 protected:
   virtual void setNumCols(unsigned int n);
   virtual void setNumFields(unsigned int n);

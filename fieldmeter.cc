@@ -134,7 +134,7 @@ void FieldMeter::setbaddatafieldcolor(unsigned long color) {
 }
 
 
-void FieldMeter::draw( void ){
+void FieldMeter::drawMeterDisplay( void ){
     /*  Draw the outline for the fieldmeter.  */
   parent_->setForeground( parent_->foreground() );
   parent_->drawFilledRectangle( x_, y_, width_, height_ );
@@ -297,8 +297,12 @@ void FieldMeter::drawused(int manditory) {
 }
 
 
-void FieldMeter::update(void) {
+void FieldMeter::updateMeterDisplay(void) {
   drawfields(0);
+}
+
+
+void FieldMeter::updateMeterHistory(void) {
 }
 
 

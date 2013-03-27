@@ -18,14 +18,15 @@ public:
 	    int numBits = 1, int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
   virtual ~BitMeter( void );
 
-  void draw( void );
-  virtual void update(void);
-  void disableMeter ( void );
+  void drawMeterDisplay(void);
+  void updateMeterDisplay(void);
+  void disableMeter(void);
 
   int numBits(void) const { return numbits_; }
   void setNumBits(int n);
 
-  void checkResources( void );
+  virtual void checkResources(void);
+  virtual void updateMeterHistory(void);
 
 protected:
   unsigned long onColor_, offColor_;

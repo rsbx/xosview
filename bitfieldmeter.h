@@ -29,11 +29,12 @@ public:
   void setUsed (double val, double total);
   void setBits(int startbit, unsigned char values);
 
-  void draw( void );
-  virtual void update( void );
-  void disableMeter ( void );
+  void drawMeterDisplay(void);
+  void updateMeterDisplay(void);
+  void disableMeter(void);
 
-  virtual void checkResources( void );
+  virtual void checkResources(void);
+  virtual void updateMeterHistory(void);
 
 protected:
   enum UsedType { INVALID_0, FLOAT, PERCENT, AUTOSCALE, INVALID_TAIL };

@@ -101,7 +101,7 @@ XOSView::XOSView( const char * instName, int argc, char *argv[] ) : XWin(),
   nummeters_ = 0;
   meters_ = NULL;
   name_ = const_cast<char *>("xosview");
-  _deferred_resize = true;
+  _deferred_resize = false;
   _deferred_redraw = true;
   windowVisibility = OBSCURED;
 
@@ -139,6 +139,7 @@ XOSView::XOSView( const char * instName, int argc, char *argv[] ) : XWin(),
 
   // determine the width and height of the window then create it
   figureSize();
+  resize();
   init( argc, argv );
   title( winname() );
   iconname( winname() );
@@ -268,6 +269,19 @@ void XOSView::collect(void) {
 }
 
 
+void XOSView::history(void) {
+  MeterNode *tmp = meters_;
+
+  XOSDEBUG("Doing history.\n");
+
+  while (tmp != NULL) {
+    if (tmp->meter_->requestevent(sampleClock))
+      tmp->meter_->updateMeterHistory();
+    tmp = tmp->next_;
+  }
+}
+
+
 void  XOSView::resize(void) {
   int newwidth;
   int newheight;
@@ -305,7 +319,7 @@ void XOSView::draw(void) {
   clear();
 
   while (tmp != NULL) {
-    tmp->meter_->draw();
+    tmp->meter_->drawMeterDisplay();
     tmp = tmp->next_;
   }
 }
@@ -318,7 +332,7 @@ void XOSView::update(void) {
 
   while (tmp != NULL) {
     if (tmp->meter_->requestevent(sampleClock))
-      tmp->meter_->update();
+      tmp->meter_->updateMeterDisplay();
     tmp = tmp->next_;
   }
 }
@@ -349,6 +363,10 @@ void XOSView::run(void) {
   while(!done_) {
     // Update the metrics
     collect();
+
+    // Update meter histories
+    // FIXME: This is separate from collect() to reduce sample jitter.
+    history();
 
     // Check for X11 events
     checkevent();

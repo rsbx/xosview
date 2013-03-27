@@ -52,24 +52,25 @@ FieldMeterGraph::~FieldMeterGraph( void )
 }
 
 
-void FieldMeterGraph::drawfields( int manditory )
+void FieldMeterGraph::updateMeterHistory(void)
 {
 	unsigned int i,j;
-        double total;
-	enum XOSView::windowVisibilityState currWinState;
+	double total;
 
 	if( !useGraph_ )
 	{
 		// Call FieldMeterDecay code if this meter should not be
 		// drawn as a graph
-		FieldMeterDecay::drawfields( manditory );
+		FieldMeterDecay::updateMeterHistory();
 		return;
 	}
 
-	if ( dousedlegends_ )
-		drawused( manditory );
+	if (!sampleHistoryCount)
+	{
+		return;
+	}
 
-	checkResize();
+	sampleIndex = (sampleIndex+1)%sampleHistoryCount;
 
 	// allocate memory for height field graph storage
 	// note: this is done here as it is not certain that both
@@ -111,11 +112,31 @@ void FieldMeterGraph::drawfields( int manditory )
 	// store current values for graphing
 	for( i = 0; i <= numfields_; i++ )
 		heightfield_[sampleIndex*(numfields_+1)+i] = (fields_[i] > 0.0) ? fields_[i]/total : 0.0;
+}
+
+
+void FieldMeterGraph::drawfields( int manditory )
+{
+	unsigned int i;
+	enum XOSView::windowVisibilityState currWinState;
+
+	if( !useGraph_ )
+	{
+		// Call FieldMeterDecay code if this meter should not be
+		// drawn as a graph
+		FieldMeterDecay::drawfields( manditory );
+		return;
+	}
+
+	if ( dousedlegends_ )
+		drawused( manditory );
+
+	checkResize();
+
+	if (!heightfield_ || !sampleHistoryCount || !(width_ > 2*BORDER_WIDTH && height_ > 2*BORDER_WIDTH))
+		return;
 
 	currWinState = parent_->getWindowVisibilityState();
-
-	if (!(width_ > 2*BORDER_WIDTH && height_ > 2*BORDER_WIDTH))
-		return;
 
 	// Try to avoid having to redraw everything.
 	if (!manditory && currWinState == XOSView::FULLY_VISIBLE && currWinState == lastWinState)
@@ -137,7 +158,6 @@ void FieldMeterGraph::drawfields( int manditory )
 	}
 
 	lastWinState = currWinState;
-	sampleIndex = (sampleIndex+1)%sampleHistoryCount;
 }
 
 
@@ -175,8 +195,8 @@ void FieldMeterGraph::setNumCols(unsigned int n)
 	sampleHistoryCount = n;
 	sampleIndex = 0;
 
-        // FIXME: This should really allocate the new array; salvage what it
-        //   can from the old array; then delete the old array.
+	// FIXME: This should really allocate the new array; salvage what it
+	//   can from the old array; then delete the old array.
 	delete [] heightfield_;
 	heightfield_ = NULL;
 }
@@ -192,6 +212,8 @@ void FieldMeterGraph::setNumFields(unsigned int n)
 
 void FieldMeterGraph::checkResize(void)
 {
+	unsigned int cols = 0;
+
 	if (x_ == last_x && y_ == last_y && width_ == last_width && height_ == last_height)
 		return;
 
@@ -200,5 +222,9 @@ void FieldMeterGraph::checkResize(void)
 	last_width = width_;
 	last_height = height_;
 
-	setNumCols(width_-2*BORDER_WIDTH);
+	if (width_ > 2*BORDER_WIDTH)
+	{
+		cols = width_-2*BORDER_WIDTH;
+	}
+	setNumCols(cols);
 }

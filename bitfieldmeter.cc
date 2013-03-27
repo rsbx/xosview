@@ -133,7 +133,7 @@ void BitFieldMeter::setfieldcolor( int field, unsigned long color ) {
 }
 
 
-void BitFieldMeter::draw( void ){
+void BitFieldMeter::drawMeterDisplay(void) {
     /*  Draw the outline for the fieldmeter.  */
   parent_->setForeground( parent_->foreground() );
   parent_->lineWidth( 1 );
@@ -163,7 +163,7 @@ void BitFieldMeter::draw( void ){
   drawfields( 1 );
 }
 
-void BitFieldMeter::update( void ) {
+void BitFieldMeter::updateMeterDisplay(void) {
   drawBits(0);
   drawfields(0);
 }
@@ -261,6 +261,11 @@ void BitFieldMeter::drawused( int manditory ){
 
   lastused_ = used_;
 }
+
+
+void BitFieldMeter::updateMeterHistory(void) {
+}
+
 
 void BitFieldMeter::drawBits( int manditory ){
   static int pass = 1;

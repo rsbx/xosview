@@ -29,12 +29,13 @@ public:
   void used_obsolete( int val ) { print_ = PERCENT; used_ = val; }
   void absolute_obsolete( float val ) { print_ = FLOAT; used_ = val; }
 
-  void setUsed (double val, double total);
-  void draw( void );
-  virtual void update( void );
-  void disableMeter ( void );
+  void setUsed(double val, double total);
+  void drawMeterDisplay(void);
+  void updateMeterDisplay(void);
+  void disableMeter(void);
 
-  virtual void checkResources( void );
+  virtual void checkResources(void);
+  virtual void updateMeterHistory(void);
 
 protected:
   enum UsedType { INVALID_0, FLOAT, PERCENT, AUTOSCALE, INVALID_TAIL };

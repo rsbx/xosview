@@ -100,24 +100,17 @@ void FieldMeterDecay::setNumFields(unsigned int n) {
 }
 
 
-void FieldMeterDecay::drawfields(int manditory)
+void FieldMeterDecay::updateMeterHistory(void)
   {
   unsigned int i;
-  int start, end;
-  int halfheight;
-  double runningtotal;
-  double total_f, total_d;
 
   if (!dodecay_)
     {
     //  If this meter shouldn't be done as a decaying splitmeter,
     //  call the ordinary fieldmeter code.
-    FieldMeter::drawfields(manditory);
+    FieldMeter::updateMeterHistory();
     return;
     }
-
-  if (dousedlegends_)
-    drawused(manditory);
 
   total_f = 0.0;
   for (i=0; i<numfields_; i++)
@@ -139,7 +132,6 @@ void FieldMeterDecay::drawfields(int manditory)
   if (firsttime_)
     {
     firsttime_ = 0;
-    manditory = 1;
     for (i=0; i<=numfields_; i++)
       {
       decay_[i] = (fields_[i] > 0.0) ? fields_[i]/total_f : 0.0;
@@ -160,6 +152,26 @@ void FieldMeterDecay::drawfields(int manditory)
     decay_[numfields_] = 1.0;
     total_d = 1.0;
     }
+  }
+
+
+void FieldMeterDecay::drawfields(int manditory)
+  {
+  unsigned int i;
+  int start, end;
+  int halfheight;
+  double runningtotal;
+
+  if (!dodecay_)
+    {
+    //  If this meter shouldn't be done as a decaying splitmeter,
+    //  call the ordinary fieldmeter code.
+    FieldMeter::drawfields(manditory);
+    return;
+    }
+
+  if (dousedlegends_)
+    drawused(manditory);
 
   halfheight = height_/2-BORDER_WIDTH;
   halfheight = (halfheight > 0) ? halfheight : 0;
@@ -187,7 +199,6 @@ void FieldMeterDecay::drawfields(int manditory)
       }
     }
 
-  total_d = 1.0;	// The decay_[] array is normalized so that the sum is always 1.0
   if (width_-2 > 0 && halfheight > 0)
     {
     start = 0;

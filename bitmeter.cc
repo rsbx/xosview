@@ -46,9 +46,14 @@ void BitMeter::checkResources( void ){
   Meter::checkResources();
 }
 
-void BitMeter::update(void) {
+void BitMeter::updateMeterDisplay(void) {
   drawBits(0);
 }
+
+
+void BitMeter::updateMeterHistory(void) {
+}
+
 
 void BitMeter::drawBits(int manditory) {
   int x1 = 0, x2;
@@ -71,7 +76,7 @@ void BitMeter::drawBits(int manditory) {
   }
 }
 
-void BitMeter::draw(void) {
+void BitMeter::drawMeterDisplay(void) {
   parent_->setForeground( parent_->foreground() );
   parent_->drawFilledRectangle( x_, y_, width_, height_ );
   if ( dolegends_ ) {
