@@ -13,7 +13,7 @@ MANDIR ?= $(PREFIX)/share/man
 
 # Optional build arguments; user may wish to override
 
-OPTFLAGS ?= -Wall -O3
+OPTFLAGS ?= -Wall -Wextra -O3
 
 # Required build arguments
 

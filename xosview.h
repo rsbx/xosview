@@ -89,7 +89,7 @@ private:
   fprintf(stderr, __VA_ARGS__); \
 }
 #else
-#define XOSDEBUG(...)
+#define XOSDEBUG(...)	do {} while(0)
 #endif
 
 #endif

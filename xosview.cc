@@ -443,6 +443,9 @@ void XOSView::checkArgs (int argc, char** argv) const
 
 
 void XOSView::exposeEvent(XExposeEvent &event) {
+  int i = event.type;	// to quiet the compiler
+  i = i;
+
   _deferred_redraw = true;
   XOSDEBUG("Got expose event.\n");
 }
