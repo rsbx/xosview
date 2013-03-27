@@ -101,7 +101,7 @@ XOSView::XOSView( const char * instName, int argc, char *argv[] ) : XWin(),
   nummeters_ = 0;
   meters_ = NULL;
   name_ = const_cast<char *>("xosview");
-  _deferred_resize = false;
+  _deferred_resize = true;
   _deferred_redraw = true;
   windowVisibility = OBSCURED;
 
@@ -139,7 +139,6 @@ XOSView::XOSView( const char * instName, int argc, char *argv[] ) : XWin(),
 
   // determine the width and height of the window then create it
   figureSize();
-  resize();
   init( argc, argv );
   title( winname() );
   iconname( winname() );
