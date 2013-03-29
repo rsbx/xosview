@@ -30,8 +30,6 @@ class WirelessMeter : public FieldMeterGraph
 		static const char *wirelessStr(int num);
 
 	protected:
-		void update_stats(void);
-		void check_hints(struct iw_quality *qual_info);
 
 	private:
 		int		_number;
@@ -46,6 +44,10 @@ class WirelessMeter : public FieldMeterGraph
 		// Used if the driver does not provide range info
 		int		range_granularity;
 		float		range_ratio;
+
+
+		void update_stats(void);
+		void check_hints(struct iw_quality *qual_info);
 	};
 
 

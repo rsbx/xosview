@@ -1,11 +1,9 @@
 //
-//  Copyright (c) 2001 by Tim Ehlers ( tehlers@gwdg.de )
 //  Copyright (c) 2013 by Raymond S Brand
 //
-//  This file may be distributed under terms of the GPL
+//  This file may be distributed under the terms of (any) BSD license or equivalent.
 //
-//  Effectively completely rewritten by Raymond S Brand with some help from
-//  wireless-tools and wavemon.
+//  Rewritten by Raymond S Brand with help from wireless-tools and wavemon.
 //
 
 #include <fstream>
@@ -20,8 +18,6 @@
 #include "xosview.h"
 #include "wirelessmeter.h"
 
-using namespace std;
-
 
 #define ICEIL(x) -((int)(-x))
 #define wMIN(a,b) (((a)<(b))?(a):(b))
@@ -33,9 +29,6 @@ using namespace std;
 #if !(MIN_WEXT <= WIRELESS_EXT) || !(WIRELESS_EXT <= MAX_WEXT)
 #error Code must be checked for wireless extensions compatibility.
 #endif
-
-#define DEFAULT_RANGE_GRANULARITY	30
-#define DEFAULT_RANGE_RATIO		0.5
 
 
 static const char SYS_NET[] =		"/sys/class/net";
@@ -78,7 +71,6 @@ WirelessMeter::~WirelessMeter(void)
 	}
 
 
-
 void WirelessMeter::checkResources(void)
 	{
 	unsigned int i;
@@ -92,7 +84,7 @@ void WirelessMeter::checkResources(void)
 	SetUsedFormat(parent_->getResource("wirelessUsedFormat"));
 	useGraph_ = parent_->isResourceTrue("wirelessGraph");
 
-	for (i=0; i<4; i++)
+	for (i=0; i<sizeof(colorlist)/sizeof(const char *); i++)
 		{
 		snprintf(buffer, 255, "wirelessColors.%s.%s", iwrq.ifr_name, colorlist[i]);
 		buffer[255] = '\0';
@@ -109,12 +101,12 @@ void WirelessMeter::checkResources(void)
 	if (!(0 < range_granularity) && !(range_granularity < 255))
 		{
 		std::cerr << "Warning: Invalid Granularity resource for device " << iwrq.ifr_name << " ignored.\n";
-		range_granularity = DEFAULT_RANGE_GRANULARITY;
+		exit(1);
 		}
 	if (!(0.0 < range_ratio) && !(range_ratio < 1.0))
 		{
 		std::cerr << "Warning: Invalid Ratio resource for device " << iwrq.ifr_name << " ignored.\n";
-		range_ratio = DEFAULT_RANGE_RATIO;
+		exit(1);
 		}
 	}
 
@@ -354,7 +346,7 @@ void WirelessMeter::update_stats(void)
 		{
 		// can only get here if there are no stats
 		val_min = 0;
-		val_max = 1;
+		val_max = 0;
 		current = val_max;
 		fields_[0] = fields_[1] = fields_[2] = 0.0;
 		used = 0;
@@ -386,13 +378,12 @@ void WirelessMeter::update_stats(void)
 
 		fields_[0] = fields_[1] = fields_[2] = 0.0;
 		fields_[(current >= val_good) ? 2 : (current >= val_fair) ? 1 : 0]
-				= (double)(current - val_min)/(val_max - val_min);
-		used = current - val_min;
+				= (double)(current-val_min)/(val_max-val_min);
+		used = current-val_min;
 		}
 
-	fields_[3] = (double)(val_max - current)/(val_max - val_min);
-	total_ = 1.0;
-	setUsed(used, total_);
+	fields_[3] = (double)(val_max-current)/(val_max-val_min);
+	setUsed(used, wMAX(1, val_max-val_min));
 	}
 
 
