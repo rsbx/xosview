@@ -383,7 +383,7 @@ void WirelessMeter::update_stats(void)
 		}
 
 	fields_[3] = (double)(val_max-current)/(val_max-val_min);
-	setUsed(used, wMAX(1, val_max-val_min));
+	setUsed(used, val_max-val_min);
 	}
 
 
