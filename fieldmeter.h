@@ -42,7 +42,7 @@ protected:
 
   unsigned int numfields_;
   double *fields_;
-  double total_, used_, lastused_;
+  double total_, used_;
   int lastusedwidth;
   int *last_start, *last_end;
   unsigned long *colors_;
@@ -62,6 +62,7 @@ protected:
 private:
   Timer _timer;
   bool baddatacolorset;
+  double lastused_, lasttotal;
 
 protected:
   void IntervalTimerStart() { _timer.start(); }

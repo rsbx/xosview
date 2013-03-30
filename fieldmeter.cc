@@ -28,6 +28,7 @@ FieldMeter::FieldMeter( XOSView *parent, unsigned int numfields, const char *tit
   print_ = PERCENT;
   used_ = 0;
   lastused_ = -1;
+  lasttotal = 0.0;
   lastusedwidth = 0;
   fields_ = NULL;
   colors_ = NULL;
@@ -73,7 +74,7 @@ void FieldMeter::SetUsedFormat ( const char * const fmt ) {
   else
   {
     fprintf (stderr, "Error:  could not parse format of '%s'\n", fmt);
-    fprintf (stderr, "  I expected one of 'percent', 'bytes', or 'float'\n");
+    fprintf (stderr, "  I expected one of 'percent', 'autoscale', or 'float'\n");
     fprintf (stderr, "  (Case-insensitive)\n");
     exit(1);
   }
@@ -82,29 +83,13 @@ void FieldMeter::SetUsedFormat ( const char * const fmt ) {
 
 void FieldMeter::setUsed (double val, double total)
 {
-  if (print_ == FLOAT)
-    used_ = val;
-  else if (print_ == PERCENT)
+  used_ = val;
+  total_ = total;
+
+  if (print_ == PERCENT)
   {
     if (total != 0.0)
       used_ = val / total * 100.0;
-    else
-    {
-      if (!printedZeroTotalMesg_) {
-        printedZeroTotalMesg_ = 1;
-	fprintf(stderr, "Warning:  %s meter had a zero total "
-		"field!  Would have caused a div-by-zero "
-		"exception.\n", name());
-      }
-      used_ = 0.0;
-    }
-  }
-  else if (print_ == AUTOSCALE)
-    used_ = val;
-  else {
-    fprintf (stderr, "Error in %s:  I can't handle a "
-		     "UsedType enum value of %d!\n", name(), print_);
-    exit(1);
   }
 }
 
@@ -217,12 +202,28 @@ void FieldMeter::drawlegend(void) {
 void FieldMeter::drawused(int manditory) {
   int xoffset;
 
-  if (!dolegends_ || !dolegends_ || (!manditory && lastused_ == used_))
-      return;
+  if (!dolegends_
+        || !dousedlegends_
+        || (!manditory && lastused_ == used_ && lasttotal == total_)
+        )
+    return;
+
+  lastused_ = used_;
+  lasttotal = total_;
 
   parent_->setStippleN(0);	/*  Use all-bits stipple.  */
 
   char buf[10];
+
+  xoffset = lastusedwidth;
+  if (xoffset) {
+    parent_->clear(x_-xoffset, y_+height_-parent_->textHeight(),
+                 xoffset, parent_->textHeight());
+    xoffset = 0;
+  }
+
+  if (total_ == 0.0)
+    return;
 
   if (print_ == PERCENT){
     snprintf( buf, 10, "%d%%", (int)used_ );
@@ -280,20 +281,12 @@ void FieldMeter::drawused(int manditory) {
     snprintf( buf, 10, "%.1f", used_ );
   }
 
-  xoffset = lastusedwidth;
-  if (xoffset) {
-    parent_->clear( x_ - xoffset, y_ + height_ - parent_->textHeight(),
-		 xoffset, parent_->textHeight() );
-  }
-
   xoffset = parent_->textWidth(buf);
   if (xoffset) {
     parent_->setForeground( usedcolor_ );
     parent_->drawString( x_ - xoffset, y_ + height_ - 1, buf );
   }
   lastusedwidth = xoffset;
-
-  lastused_ = used_;
 }
 
 
