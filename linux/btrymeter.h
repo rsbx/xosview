@@ -9,6 +9,7 @@
 
 
 #include "fieldmeter.h"
+#include "MeterMaker.h"
 #include <string>
 
 
@@ -17,9 +18,9 @@ public:
   BtryMeter( XOSView *parent );
   ~BtryMeter( void );
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   const char *name( void ) const { return "BtryMeter"; }
   void checkevent( void );
-
   void checkResources( void );
 
   // some basic fields of 'info','alarm','state'
@@ -35,11 +36,11 @@ public:
   acpi_batt battery;
 
   static bool has_source( void );
+
 protected:
-
   void getpwrinfo( void );
-private:
 
+private:
   bool getapminfo( void );
   bool getacpi_or_sys_info( void );
 
@@ -69,7 +70,6 @@ private:
   int acpi_sum_remain;
   int acpi_sum_rate;
   int acpi_sum_alarm;
-
 };
 
 

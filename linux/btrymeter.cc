@@ -27,6 +27,13 @@ static const char APMFILENAME[] = "/proc/apm";
 static const char ACPIBATTERYDIR[] = "/proc/acpi/battery";
 static const char SYSPOWERDIR[] = "/sys/class/power_supply";
 
+
+void BtryMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("battery") && BtryMeter::has_source())
+    mmake->push(new BtryMeter(xosview));
+}
+
+
 BtryMeter::BtryMeter( XOSView *parent )
   : FieldMeter( parent, 2, "BTRY", "CHRG/USED", 1, 1, 0 ){
 
@@ -47,13 +54,16 @@ BtryMeter::BtryMeter( XOSView *parent )
 
 }
 
+
 BtryMeter::~BtryMeter( void ){
 }
+
 
 // determine if any usable source of battery information
 bool BtryMeter::has_source( void ){
   return has_apm() || has_acpi() || has_syspower();
 }
+
 
 // determine if /proc/apm exists and is readable
 bool BtryMeter::has_apm( void ){

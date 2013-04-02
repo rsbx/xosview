@@ -20,6 +20,35 @@ static int cputime_to_field[10] = { 0, 1, 2, 9, 5, 4, 3, 8, 6, 7 };
 
 #define MAX_PROCSTAT_LENGTH 4096
 
+
+void CPUMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("cpu")){
+    bool single, both, all;
+    unsigned int cpuCount = CPUMeter::countCPUs();
+
+    single = (strncmp(xosview->getResource("cpuFormat"), "single", 2) == 0);
+    both = (strncmp(xosview->getResource("cpuFormat"), "both", 2) == 0);
+    all = (strncmp(xosview->getResource("cpuFormat"), "all", 2) == 0);
+
+    if (strncmp(xosview->getResource("cpuFormat"), "auto", 2) == 0) {
+      if (cpuCount == 1 || cpuCount > 4) {
+        single = true;
+      } else {
+        all = true;
+      }
+    }
+
+    if (single || both)
+      mmake->push(new CPUMeter(xosview, CPUMeter::cpuStr(0)));
+
+    if (all || both) {
+      for (unsigned int i = 1; i <= cpuCount; i++)
+        mmake->push(new CPUMeter(xosview, CPUMeter::cpuStr(i)));
+    }
+  }
+}
+
+
 CPUMeter::CPUMeter(XOSView *parent, const char *cpuID)
 : FieldMeterGraph( parent, 10, toUpper(cpuID), "USR/NIC/SYS/SI/HI/WIO/GST/NGS/STL/IDLE" ) {
   _lineNum = findLine(cpuID);
@@ -43,6 +72,7 @@ CPUMeter::CPUMeter(XOSView *parent, const char *cpuID)
 
 CPUMeter::~CPUMeter( void ){
 }
+
 
 void CPUMeter::checkResources( void ){
   FieldMeterGraph::checkResources();

@@ -18,6 +18,12 @@
 #define MAX_PROCSTAT_LENGTH 2048
 
 
+void DiskMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("disk"))
+      mmake->push(new DiskMeter(xosview, atof(xosview->getResource("diskBandwidth"))));
+}
+
+
 DiskMeter::DiskMeter( XOSView *parent, float max ) : FieldMeterGraph(
   parent, 3, "DISK", "READ/WRITE/IDLE"), _vmstat(false),
   _statFileName("/proc/stat")
@@ -53,9 +59,11 @@ DiskMeter::DiskMeter( XOSView *parent, float max ) : FieldMeterGraph(
 
 }
 
+
 DiskMeter::~DiskMeter( void )
     {
     }
+
 
 void DiskMeter::checkResources( void )
     {

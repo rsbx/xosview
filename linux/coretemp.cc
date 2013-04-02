@@ -26,14 +26,51 @@ static const char SYS_HWMON[] = "/sys/class/hwmon";
 static const char SYS_CORETEMP[] = "/sys/devices/platform/coretemp";
 
 
+void CoreTemp::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("coretemp")) {
+    char caption[25];
+    snprintf(caption, 25, "ACT/HIGH/%s", xosview->getResourceOrUseDefault( "coretempHighest", "100" ) );
+    const char *displayType = xosview->getResourceOrUseDefault( "coretempDisplayType", "separate" );
+    for (uint i = 1 ; ; i++) {
+      char s[80];
+      snprintf(s, 80, "coretemp%dPackage", i);
+      const char *dummy = xosview->getResourceOrUseDefault(s, NULL);
+      if (i > 1 && ( !dummy || !*dummy ))
+        break;
+      int pkg = ( dummy ? atoi(dummy) : 0 );
+      snprintf(s, 80, "coretemp%dDisplayType", i);
+      displayType = xosview->getResourceOrUseDefault( s, displayType );
+      if (strncmp(displayType, "separate", 1) == 0) {
+        unsigned int cpuCount = CoreTemp::countCpus(pkg);
+        char name[10];
+        for (uint cpu = 0; cpu < cpuCount; cpu++) {
+          sprintf(name, "CPU%d", cpu);
+          mmake->push(new CoreTemp(xosview, name, caption, pkg, cpu));
+        }
+      }
+      else if (strncmp(displayType, "average", 1) == 0)
+        mmake->push(new CoreTemp(xosview, "CPU", caption, pkg, -1));
+      else if (strncmp(displayType, "maximum", 1) == 0)
+        mmake->push(new CoreTemp(xosview, "CPU", caption, pkg, -2));
+      else {
+        std::cerr << "Unknown value of coretempDisplayType: " << displayType << std::endl;
+        std::cerr << "Supported types are: separate, average and maximum." << std::endl;
+        xosview->done(1);
+      }
+    }
+  }
+}
+
+
 CoreTemp::CoreTemp( XOSView *parent, const char *label, const char *caption, int pkg, int cpu )
   : FieldMeter( parent, 3, label, caption, 1, 1, 1 ), _pkg(pkg), _cpu(cpu) {
   _high = 0;
 }
 
-CoreTemp::~CoreTemp( void ) {
 
+CoreTemp::~CoreTemp( void ) {
 }
+
 
 void CoreTemp::checkResources( void ) {
   FieldMeter::checkResources();

@@ -13,6 +13,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+void RAIDMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("RAID")){
+    int RAIDCount = atoi(xosview->getResource("RAIDdevicecount"));
+    for (int i = 0 ; i < RAIDCount ; i++)
+      mmake->push(new RAIDMeter(xosview, i));
+  }
+}
+
+
 RAIDMeter::RAIDMeter( XOSView *parent, int raiddev)
   : BitFieldMeter( parent, 1, 2, "RAID") {
   _raiddev = raiddev;
@@ -29,8 +39,10 @@ RAIDMeter::RAIDMeter( XOSView *parent, int raiddev)
   total_ = 100.0;
 }
 
+
 RAIDMeter::~RAIDMeter( void ){
 }
+
 
 void RAIDMeter::checkevent( void ){
 

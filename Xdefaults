@@ -21,6 +21,11 @@
 *verticalSpacing:    3
 *BadDataColor:       grey50
 
+! OS type specific metric order lists
+
+*linux.metrics:      load cpu mem disk wireless RAID swap page net \
+                     NFSDStat NFSStat serial int battery coretemp lmstemp acpitemp
+
 ! Load Meter Resources
 
 *load:                 True

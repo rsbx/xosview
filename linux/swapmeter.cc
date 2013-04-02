@@ -13,13 +13,21 @@
 static const char MEMFILENAME[] = "/proc/meminfo";
 
 
+void SwapMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("swap"))
+    mmake->push(new SwapMeter(xosview));
+}
+
+
 SwapMeter::SwapMeter( XOSView *parent )
 : FieldMeterGraph( parent, 2, "SWAP", "USED/FREE" ){
 
 }
 
+
 SwapMeter::~SwapMeter( void ){
 }
+
 
 void SwapMeter::checkResources( void ){
   FieldMeterGraph::checkResources();

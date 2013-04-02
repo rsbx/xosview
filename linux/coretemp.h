@@ -13,6 +13,7 @@
 
 #include "cpumeter.h"
 #include "fieldmeter.h"
+#include "MeterMaker.h"
 #include <string>
 #include <vector>
 
@@ -22,10 +23,10 @@ public:
   CoreTemp( XOSView *parent, const char *label, const char *caption, int pkg, int cpu);
   ~CoreTemp( void );
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   const char *name( void ) const { return "CoreTemp"; }
   void checkevent( void );
   void checkResources( void );
-
   static unsigned int countCpus(int pkg);
 
 protected:

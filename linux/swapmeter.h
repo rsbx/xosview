@@ -9,6 +9,7 @@
 
 
 #include "fieldmetergraph.h"
+#include "MeterMaker.h"
 
 
 class SwapMeter : public FieldMeterGraph {
@@ -16,13 +17,14 @@ public:
   SwapMeter( XOSView *parent );
   ~SwapMeter( void );
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   const char *name( void ) const { return "SwapMeter"; }
   void checkevent( void );
-
   void checkResources( void );
-protected:
 
+protected:
   void getswapinfo( void );
+
 private:
 };
 

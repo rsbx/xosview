@@ -44,6 +44,21 @@ static int wif_count = -1;
 static struct wif_info *wif_array = NULL;
 
 
+void WirelessMeter::makeMeters(XOSView *xosview, MeterMaker *mmake)
+	{
+	unsigned int i, count;
+
+	if (xosview->isResourceTrue("wireless"))
+		{
+		count = WirelessMeter::countdevices();
+		for (i=0; i<count; i++)
+			{
+			mmake->push(new WirelessMeter(xosview, i, (count==1 ? "WLAN" : WirelessMeter::wirelessStr(i))));
+			}
+		}
+	}
+
+
 WirelessMeter::WirelessMeter(XOSView *parent, int ID, const char *wlID)
 		: FieldMeterGraph(parent, 4, wlID, "Poor/Fair/Good/Free", 1, 1, 0), _number(ID)
 	{
@@ -394,7 +409,7 @@ static int wifname_cmp(const void *p1, const void *p2)
 	}
 
 
-int WirelessMeter::countdevices(void)
+unsigned int WirelessMeter::countdevices(void)
 	{
 	DIR		*dir;
 	FILE		*f;

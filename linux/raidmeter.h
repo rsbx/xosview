@@ -8,6 +8,8 @@
 #define _RAIDMETER_H_
 
 #include "bitfieldmeter.h"
+#include "MeterMaker.h"
+
 
 #define MAX_MD 8
 
@@ -16,10 +18,9 @@ public:
   RAIDMeter( XOSView *parent, int raiddev = 0);
   ~RAIDMeter( void );
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   void checkevent( void );
-
   void checkResources( void );
-
   static int countRAIDs( void );
 
 protected:

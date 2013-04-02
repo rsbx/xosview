@@ -12,6 +12,8 @@
 #define UART_MSR        6
 
 #include "bitmeter.h"
+#include "MeterMaker.h"
+
 
 class SerialMeter : public BitMeter {
 public:
@@ -21,10 +23,9 @@ public:
   SerialMeter( XOSView *parent, Device device);
   ~SerialMeter( void );
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   static const char *getResourceName(Device dev);
-
   void checkevent( void );
-
   void checkResources( void );
 
 private:

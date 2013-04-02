@@ -15,6 +15,12 @@
 #define MAX_PROCSTAT_LENGTH 2048
 
 
+void PageMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("page"))
+    mmake->push(new PageMeter(xosview, atof(xosview->getResource("pageBandwidth"))));
+}
+
+
 PageMeter::PageMeter( XOSView *parent, float max )
   : FieldMeterGraph( parent, 3, "PAGE", "IN/OUT/IDLE" ),
   _vmstat(false), _statFileName("/proc/stat"){
@@ -34,8 +40,10 @@ PageMeter::PageMeter( XOSView *parent, float max )
       }
 }
 
+
 PageMeter::~PageMeter( void ){
 }
+
 
 void PageMeter::checkResources( void ){
   FieldMeterGraph::checkResources();

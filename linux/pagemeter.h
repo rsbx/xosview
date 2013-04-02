@@ -8,16 +8,19 @@
 #define _PAGEMETER_H_
 
 #include "fieldmetergraph.h"
+#include "MeterMaker.h"
+
 
 class PageMeter : public FieldMeterGraph {
 public:
   PageMeter( XOSView *parent, float max );
   ~PageMeter( void );
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   const char *name( void ) const { return "PageMeter"; }
   void checkevent( void );
-
   void checkResources( void );
+
 protected:
   unsigned long pageinfo_[2][2];
   int pageindex_;
@@ -28,6 +31,7 @@ protected:
   void getpageinfo( void );
   void getvmpageinfo( void );
   void updateinfo(void);
+
 private:
 };
 

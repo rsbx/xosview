@@ -32,6 +32,7 @@
 static const char *NFSSVCSTAT = "/proc/net/rpc/nfsd";
 static const char * NFSCLTSTAT = "/proc/net/rpc/nfs";
 
+
 NFSMeter::NFSMeter(XOSView *parent, const char *name, int nfields,
 		const char *fields, const char *statfile)
   : FieldMeterGraph( parent, nfields, name, fields ){
@@ -39,20 +40,32 @@ NFSMeter::NFSMeter(XOSView *parent, const char *name, int nfields,
 	_statname = name;
 }
 
+
 NFSMeter::~NFSMeter( void ){
 }
+
 
 void NFSMeter::checkResources( void ){
   FieldMeterGraph::checkResources();
 }
+
+
+void NFSDStats::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("NFSDStats")){
+      mmake->push(new NFSDStats(xosview));
+  }
+}
+
 
 NFSDStats::NFSDStats(XOSView *parent)
   : NFSMeter(parent, "NFSD", 4, "BAD/UDP/TCP/IDLE", NFSSVCSTAT ){
 	starttimer();
 }
 
+
 NFSDStats::~NFSDStats( void ) {
 }
+
 
 void NFSDStats::checkResources( void ){
   NFSMeter::checkResources();
@@ -70,6 +83,7 @@ void NFSDStats::checkResources( void ){
   //SetUsedFormat ("autoscale");
   //SetUsedFormat ("percent");
 }
+
 void NFSDStats::checkevent(void)
 {
 	char buf[4096], name[64];
@@ -136,13 +150,23 @@ void NFSDStats::checkevent(void)
     _lastBad = badcalls;
 }
 
+
+void NFSStats::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("NFSStats")){
+      mmake->push(new NFSStats(xosview));
+  }
+}
+
+
 NFSStats::NFSStats(XOSView *parent)
   : NFSMeter(parent, "NFS", 4, "RETRY/AUTH/CALL/IDLE", NFSCLTSTAT ){
 	starttimer();
 }
 
+
 NFSStats::~NFSStats( void ) {
 }
+
 
 void NFSStats::checkResources( void ){
   NFSMeter::checkResources();

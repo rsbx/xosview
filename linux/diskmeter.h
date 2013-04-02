@@ -8,6 +8,7 @@
 #define _DISKMETER_H_
 
 #include "fieldmetergraph.h"
+#include "MeterMaker.h"
 #include <map>
 #include <string>
 
@@ -20,12 +21,12 @@ class DiskMeter : public FieldMeterGraph
         DiskMeter( XOSView *parent, float max );
         ~DiskMeter( void );
 
+        static void makeMeters(XOSView *xosview, MeterMaker *mmake);
         const char *name( void ) const { return "DiskMeter"; }
         void checkevent( void );
-
         void checkResources( void );
-    protected:
 
+    protected:
         // sysfs:
         void update_info(const diskmap &reads, const diskmap &writes);
         void getsysfsdiskinfo( void );
@@ -33,9 +34,9 @@ class DiskMeter : public FieldMeterGraph
         void getdiskinfo( void );
         void getvmdiskinfo( void );
         void updateinfo(unsigned long one, unsigned long two,
-          int fudgeFactor);
-    private:
+        int fudgeFactor);
 
+    private:
         // sysfs:
         diskmap sysfs_read_prev_, sysfs_write_prev_;
         bool _sysfs;

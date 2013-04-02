@@ -23,6 +23,27 @@ static const char PROC_SENSORS_24[] = "/proc/sys/dev/sensors";
 static const char PROC_SENSORS_26[] = "/sys/class/hwmon";
 
 
+void LmsTemp::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("lmstemp")){
+    char caption[80];
+    snprintf(caption, 80, "ACT/HIGH/%s",
+      xosview->getResourceOrUseDefault("lmstempHighest", "100"));
+    for (int i = 1 ; ; i++) {
+      char s[20];
+      snprintf(s, 20, "lmstemp%d", i);
+      const char *tempfile = xosview->getResourceOrUseDefault(s, NULL);
+      if (!tempfile || !*tempfile)
+        break;
+      snprintf(s, 20, "lmshigh%d", i);
+      const char *highfile = xosview->getResourceOrUseDefault(s, NULL);
+      snprintf(s, 20, "lmstempLabel%d", i);
+      const char *lab = xosview->getResourceOrUseDefault(s, "TMP");
+      mmake->push(new LmsTemp(xosview, tempfile, highfile, lab, caption));
+    }
+  }
+}
+
+
 LmsTemp::LmsTemp( XOSView *parent, const char *tempfile, const char *highfile, const char *label, const char *caption)
   : FieldMeter( parent, 3, label, caption, 1, 1, 0 ){
   if (!checksensors(1, PROC_SENSORS_24, tempfile, highfile)) {
@@ -54,8 +75,10 @@ LmsTemp::LmsTemp( XOSView *parent, const char *tempfile, const char *highfile, c
   _high = 0;
 }
 
+
 LmsTemp::~LmsTemp( void ){
 }
+
 
 /* this part is adapted from ProcMeter3.2 */
 bool LmsTemp::checksensors(int isproc, const std::string dir, const char* tempfile, const char *highfile) {

@@ -12,15 +12,24 @@
 
 static const char MEMFILENAME[] = "/proc/meminfo";
 
+
+void MemMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+ if (xosview->isResourceTrue("mem"))
+    mmake->push(new MemMeter(xosview));
+}
+
+
 MemMeter::MemMeter( XOSView *parent )
 : FieldMeterGraph( parent, 6, "MEM", "USED/BUFF/SLAB/MAP/CACHE/FREE" ){
   _MIlineInfos = NULL;
   initLineInfo();
 }
 
+
 MemMeter::~MemMeter( void ){
   delete[] _MIlineInfos;
 }
+
 
 void MemMeter::checkResources( void ){
   FieldMeterGraph::checkResources();

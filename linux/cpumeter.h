@@ -8,12 +8,15 @@
 #define _CPUMETER_H_
 
 #include "fieldmetergraph.h"
+#include "MeterMaker.h"
+
 
 class CPUMeter : public FieldMeterGraph {
 public:
   CPUMeter(XOSView *parent, const char *cpuID = "cpu");
   ~CPUMeter(void);
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   const char *name(void) const { return "CPUMeter"; }
   void checkevent(void);
 

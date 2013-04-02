@@ -19,7 +19,7 @@ public:
   void makeMeters(void);
 
 private:
-  XOSView *_xos;
+  XOSView *xosview;
 };
 
 #endif

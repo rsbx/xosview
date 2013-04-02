@@ -43,14 +43,42 @@ typedef unsigned long long u64;
 #endif
 #include <linux/serial.h>
 
+
+void SerialMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+#if defined (__arm__) || defined(__mc68000__) || defined(__powerpc__) || defined(__sparc__) || defined(__s390__) || defined(__s390x__)
+  /* these architectures have no ioperm() */
+#else
+  for (int i = 0 ; i < SerialMeter::numDevices() ; i++)
+      {
+      bool ok ;  unsigned long val ;
+      const char *res = SerialMeter::getResourceName((SerialMeter::Device)i);
+      if ( !(ok = xosview->isResourceTrue(res)) )
+          {
+          std::istringstream is(xosview->getResource(res));
+          is >> std::setbase(0) >> val;
+          if (!is)
+              ok = false;
+          else
+              ok = val & 0xFFFF;
+          }
+
+      if ( ok )
+          mmake->push(new SerialMeter(xosview, (SerialMeter::Device)i));
+      }
+#endif
+}
+
+
 SerialMeter::SerialMeter( XOSView *parent, Device device )
   : BitMeter( parent, getTitle(device), "LSR bits(0-7), MSR bits(0-7)", 16){
   _device = device;
   _port = 0;
 }
 
+
 SerialMeter::~SerialMeter( void ){
 }
+
 
 void SerialMeter::checkevent( void ){
   getserial();

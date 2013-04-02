@@ -8,7 +8,9 @@
 #define _NETMETER_H_
 
 #include "fieldmetergraph.h"
+#include "MeterMaker.h"
 #include "timer.h"
+
 
 class Host;
 
@@ -17,14 +19,16 @@ public:
   NetMeter(XOSView *parent, float max);
   ~NetMeter( void );
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   const char *name( void ) const { return "NetMeter"; }
   void checkevent( void );
-
   void checkResources( void );
+
 protected:
   float maxpackets_;
   std::string netIface_;
   bool ignored_;
+
 private:
   int _ipsock;
   Timer _timer;

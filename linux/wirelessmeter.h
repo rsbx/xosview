@@ -8,6 +8,7 @@
 #define _WIRELESSMETER_H_
 
 #include "fieldmetergraph.h"
+#include "MeterMaker.h"
 
 #include <sys/socket.h>
 #include <linux/if.h>
@@ -20,13 +21,14 @@ class WirelessMeter : public FieldMeterGraph
 		WirelessMeter(XOSView *parent, int ID = 1, const char *wlID = "WL");
 		~WirelessMeter(void);
 
+		static void makeMeters(XOSView *xosview, MeterMaker *mmake);
 		const char *name(void) const
 			{
 			 return "WirelessMeter";
 			}
 		void checkevent(void);
 		void checkResources(void);
-		static int countdevices(void);
+		static unsigned int countdevices(void);
 		static const char *wirelessStr(int num);
 
 	protected:

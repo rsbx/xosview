@@ -13,6 +13,7 @@
 
 
 #include "fieldmeter.h"
+#include "MeterMaker.h"
 #include <string>
 
 
@@ -21,14 +22,15 @@ public:
   LmsTemp( XOSView *parent, const char *tempfile, const char *highfile, const char *label, const char * caption);
   ~LmsTemp( void );
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   const char *name( void ) const { return "LmsTemp"; }
   void checkevent( void );
-
   void checkResources( void );
-protected:
 
+protected:
   void getlmstemp( void );
   bool checksensors(int isproc, const std::string dir, const char* tempfile, const char* highfile);
+
 private:
   std::string _tempfile, _highfile;
   int _high;

@@ -44,6 +44,13 @@
 #include <iomanip>
 #include <string>
 
+
+void NetMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("net"))
+    mmake->push(new NetMeter(xosview, atof(xosview->getResource("netBandwidth"))));
+}
+
+
 NetMeter::NetMeter( XOSView *parent, float max )
   : FieldMeterGraph( parent, 3, "NET", "IN/OUT/IDLE" ){
   _timer.start();
@@ -55,9 +62,11 @@ NetMeter::NetMeter( XOSView *parent, float max )
   checkOSVersion();
 }
 
+
 NetMeter::~NetMeter( void ){
   close (_ipsock);
 }
+
 
 void NetMeter::checkOSVersion(void)
     {

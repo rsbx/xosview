@@ -20,6 +20,28 @@ static const char PROC_ACPI_TZ[] = "/proc/acpi/thermal_zone";
 static const char SYS_ACPI_TZ[]  = "/sys/devices/virtual/thermal";
 
 
+void ACPITemp::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("acpitemp")) {
+    char caption[80];
+    snprintf(caption, 80, "ACT/HIGH/%s", xosview->getResourceOrUseDefault("acpitempHighest", "100"));
+    for (int i = 1 ; ; i++) {
+      char s[20];
+      snprintf(s, 20, "acpitemp%d", i);
+      const char *tempfile = xosview->getResourceOrUseDefault(s, NULL);
+      if (!tempfile || !*tempfile)
+        break;
+      snprintf(s, 20, "acpihigh%d", i);
+      const char *highfile = xosview->getResourceOrUseDefault(s, NULL);
+      if (!highfile || !*highfile)
+        break;
+      snprintf(s, 20, "acpitempLabel%d", i);
+      const char *lab = xosview->getResourceOrUseDefault(s, "TMP");
+      mmake->push(new ACPITemp(xosview, tempfile, highfile, lab, caption));
+    }
+  }
+}
+
+
 ACPITemp::ACPITemp( XOSView *parent, const char *tempfile, const char *highfile, const char *label, const char *caption )
 : FieldMeter( parent, 3, label, caption, 1, 1, 0 ) {
   if (!checkacpi(tempfile, highfile)) {
@@ -38,9 +60,10 @@ ACPITemp::ACPITemp( XOSView *parent, const char *tempfile, const char *highfile,
   _high = 0;
 }
 
-ACPITemp::~ACPITemp( void ) {
 
+ACPITemp::~ACPITemp( void ) {
 }
+
 
 int ACPITemp::checkacpi( const char *tempfile, const char *highfile ) {
   struct stat buf;

@@ -13,6 +13,8 @@
 
 
 #include "fieldmeter.h"
+#include "MeterMaker.h"
+
 
 #define PATH_SIZE 128
 
@@ -22,14 +24,15 @@ public:
   ACPITemp( XOSView *parent, const char *tempfile, const char *highfile, const char *label, const char * caption);
   ~ACPITemp( void );
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   const char *name( void ) const { return "ACPITemp"; }
   void checkevent( void );
-
   void checkResources( void );
-protected:
 
+protected:
   void getacpitemp( void );
   int  checkacpi(const char* tempfile, const char* highfile);
+
 private:
   char _tempfile[PATH_SIZE];
   char _highfile[PATH_SIZE];

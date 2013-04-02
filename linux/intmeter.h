@@ -8,6 +8,7 @@
 #define _INTMETER_H_
 
 #include "bitmeter.h"
+#include "MeterMaker.h"
 #include "cpumeter.h"
 
 class IntMeter : public BitMeter {
@@ -15,10 +16,9 @@ public:
   IntMeter( XOSView *parent, int cpu = 0);
   ~IntMeter( void );
 
+  static void makeMeters(XOSView *xosview, MeterMaker *mmake);
   void checkevent( void );
-
   void checkResources( void );
-
   static int countCPUs(void) { return CPUMeter::countCPUs(); }
 
 protected:

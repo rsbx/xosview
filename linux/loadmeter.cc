@@ -168,14 +168,22 @@ static int GetColorCount(XOSView *parent) {
 }
 
 
+void LoadMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("load"))
+    mmake->push(new LoadMeter(xosview));
+}
+
+
 LoadMeter::LoadMeter( XOSView *parent )
   : FieldMeterGraph( parent, GetColorCount(parent)+1, "LOAD", "PROCS", 1, 1, 0 ){
   old_cpu_speed_= 0;
   do_cpu_speed = 0;
 }
 
+
 LoadMeter::~LoadMeter( void ){
 }
+
 
 void LoadMeter::checkResources( void ){
   int i = 0;

@@ -15,6 +15,21 @@ static const char *INTFILE     = "/proc/interrupts";
 static std::map<int,int> realintnum;
 
 
+void IntMeter::makeMeters(XOSView *xosview, MeterMaker *mmake) {
+  if (xosview->isResourceTrue("interrupts")) {
+    int cpuCount = IntMeter::countCPUs();
+    cpuCount = cpuCount == 0 ? 1 : cpuCount;
+    if (xosview->isResourceTrue("intSeparate")) {
+      for (int i = 0 ; i < cpuCount ; i++)
+        mmake->push(new IntMeter(xosview, i));
+    }
+    else {
+      mmake->push(new IntMeter(xosview, cpuCount-1));
+    }
+  }
+}
+
+
 IntMeter::IntMeter( XOSView *parent, int cpu)
   : BitMeter( parent, "INTS", "", 1, 0, 0 ), _cpu(cpu) {
   _old = ( CPUMeter::getkernelversion() <= 2000000 ? true : false );
@@ -22,12 +37,14 @@ IntMeter::IntMeter( XOSView *parent, int cpu)
   initirqcount();
 }
 
+
 IntMeter::~IntMeter( void ){
    if(irqs_)
    	delete [] irqs_;
    if(lastirqs_)
    	delete [] lastirqs_;
 }
+
 
 void IntMeter::checkevent( void ){
   getirqs();
