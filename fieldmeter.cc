@@ -12,6 +12,7 @@
 #include "fieldmeter.h"
 #include "xosview.h"
 #include <math.h>
+#include "formatnum.h"
 
 
 #define LEGEND_FIELD_SEP	"/"
@@ -63,18 +64,31 @@ void FieldMeter::checkResources( void ){
 }
 
 
-void FieldMeter::SetUsedFormat ( const char * const fmt ) {
+void FieldMeter::SetUsedFormat (const char * const fmt) {
     /*  Do case-insensitive compares.  */
-  if (!strncasecmp (fmt, "percent", 8))
+  if (!strcasecmp(fmt, "percent")) {
     print_ = PERCENT;
-  else if (!strncasecmp (fmt, "autoscale", 10))
-    print_ = AUTOSCALE;
-  else if (!strncasecmp (fmt, "float", 6))
-    print_ = FLOAT;
+  }
+  else if (!strcasecmp(fmt, "scale1000")) {
+    print_ = DECIMAL;
+  }
+  else if (!strcasecmp(fmt, "scale1024")) {
+    print_ = COMPUTER;
+  }
+  else if (!strcasecmp(fmt, "autoscale")) {
+    print_ = COMPUTER;
+    fprintf (stderr, "Warning: The 'autoscale' format specifier is deprecated.\n");
+    fprintf (stderr, "  Use 'scale1024' instead.\n");
+  }
+  else if (!strcasecmp(fmt, "float")) {
+    print_ = DECIMAL;
+    fprintf (stderr, "Warning: The 'float' format specifier is deprecated.\n");
+    fprintf (stderr, "  Use 'scale1000' instead.\n");
+  }
   else
   {
     fprintf (stderr, "Error:  could not parse format of '%s'\n", fmt);
-    fprintf (stderr, "  I expected one of 'percent', 'autoscale', or 'float'\n");
+    fprintf (stderr, "  One of 'percent', 'scale1000', or 'scale1024' was expected\n");
     fprintf (stderr, "  (Case-insensitive)\n");
     exit(1);
   }
@@ -200,7 +214,7 @@ void FieldMeter::drawlegend(void) {
 
 
 void FieldMeter::drawused(int manditory) {
-  int xoffset;
+  char buf[10];
 
   if (!dolegends_
         || !dousedlegends_
@@ -213,80 +227,30 @@ void FieldMeter::drawused(int manditory) {
 
   parent_->setStippleN(0);	/*  Use all-bits stipple.  */
 
-  char buf[10];
-
-  xoffset = lastusedwidth;
-  if (xoffset) {
-    parent_->clear(x_-xoffset, y_+height_-parent_->textHeight(),
-                 xoffset, parent_->textHeight());
-    xoffset = 0;
+  if (lastusedwidth) {
+    parent_->clear(x_-lastusedwidth, y_+height_-parent_->textHeight(),
+                 lastusedwidth, parent_->textHeight());
+    lastusedwidth = 0;
   }
 
   if (total_ == 0.0)
     return;
 
-  if (print_ == PERCENT){
-    snprintf( buf, 10, "%d%%", (int)used_ );
+  if (print_ == PERCENT) {
+    (void)FormatNum4(buf, 10, FormatNum_Percent, used_);
   }
-  else if (print_ == AUTOSCALE){
-    char scale;
-    double scaled_used;
-      /*  Unfortunately, we have to do our comparisons by 1000s (otherwise
-       *  a value of 1020, which is smaller than 1K, could end up
-       *  being printed as 1020, which is wider than what can fit)  */
-      /*  However, we do divide by 1024, so a K really is a K, and not
-       *  1000.  */
-      /*  In addition, we need to compare against 999.5*1000, because
-       *  999.5, if not rounded up to 1.0 K, will be rounded by the
-       *  %.0f to be 1000, which is too wide.  So anything at or above
-       *  999.5 needs to be bumped up.  */
-    if (used_ >= 999.5*1000*1000*1000*1000*1000*1000)
-	{scale='E'; scaled_used = used_/1024/1024/1024/1024/1024/1024;}
-    else if (used_ >= 999.5*1000*1000*1000*1000)
-	{scale='P'; scaled_used = used_/1024/1024/1024/1024/1024;}
-    else if (used_ >= 999.5*1000*1000*1000)
-	{scale='T'; scaled_used = used_/1024/1024/1024/1024;}
-    else if (used_ >= 999.5*1000*1000)
-	{scale='G'; scaled_used = used_/1024/1024/1024;}
-    else if (used_ >= 999.5*1000)
-	{scale='M'; scaled_used = used_/1024/1024;}
-    else if (used_ >= 999.5)
-	{scale='K'; scaled_used = used_/1024;}
-    else {scale='\0'; scaled_used = used_;}
-      /*  For now, we can only print 3 characters, plus the optional
-       *  suffix, without overprinting the legends.  Thus, we can
-       *  print 965, or we can print 34, but we can't print 34.7 (the
-       *  decimal point takes up one character).  bgrayson   */
-      /*  Also check for negative values, and just print "-" for
-       *  them.  */
-    if (scaled_used < 0)
-      snprintf (buf, 10, "-");
-    else if (scaled_used == 0.0)
-      snprintf (buf, 10, "0");
-    else if (scaled_used < 9.95) {
-      //  9.95 or above would get
-      //  rounded to 10.0, which is too wide.
-      if (scale)
-	snprintf (buf, 10, "%.1f%c", scaled_used, scale);
-      else
-	snprintf (buf, 10, "%.1f", scaled_used);
-    } else {
-      if (scale)
-        snprintf (buf, 10, "%.0f%c", scaled_used, scale);
-      else
-        snprintf (buf, 10, "%.0f", scaled_used);
-    }
+  else if (print_ == COMPUTER) {
+    (void)FormatNum4(buf, 10, FormatNum_Scale_1024_Up, used_);
   }
-  else {
-    snprintf( buf, 10, "%.1f", used_ );
+  else if (print_ == DECIMAL) {
+    (void)FormatNum4(buf, 10, FormatNum_Scale_1000_Up, used_);
   }
 
-  xoffset = parent_->textWidth(buf);
-  if (xoffset) {
-    parent_->setForeground( usedcolor_ );
-    parent_->drawString( x_ - xoffset, y_ + height_ - 1, buf );
+  lastusedwidth = parent_->textWidth(buf);
+  if (lastusedwidth) {
+    parent_->setForeground(usedcolor_);
+    parent_->drawString(x_-lastusedwidth, y_+height_-1, buf);
   }
-  lastusedwidth = xoffset;
 }
 
 

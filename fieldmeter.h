@@ -25,9 +25,6 @@ public:
   void dolegends( int val ) { dolegends_ = val; }
   void dousedlegends( int val ) { dousedlegends_ = val; }
   void reset( void );
-    /*  These next two are deprecated -- use setUsed instead.  bgrayson  */
-  void used_obsolete( int val ) { print_ = PERCENT; used_ = val; }
-  void absolute_obsolete( float val ) { print_ = FLOAT; used_ = val; }
 
   void setUsed(double val, double total);
   void drawMeterDisplay(void);
@@ -38,7 +35,7 @@ public:
   virtual void updateMeterHistory(void);
 
 protected:
-  enum UsedType { INVALID_0, FLOAT, PERCENT, AUTOSCALE, INVALID_TAIL };
+  enum UsedType {INVALID_0, DECIMAL, PERCENT, COMPUTER, INVALID_TAIL};
 
   unsigned int numfields_;
   double *fields_;

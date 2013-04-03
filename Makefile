@@ -32,7 +32,8 @@ OBJS = Host.o \
 	main.o \
 	meter.o \
 	xosview.o \
-	xwin.o
+	xwin.o \
+	formatnum.o
 
 # Optional platform type
 

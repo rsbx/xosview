@@ -73,23 +73,32 @@ If True then xosview will display a \\$1 meter.
 ..
 .\"  The .uf macro is for the ``used format'' stuff.
 .de uf
-xosview*\\$1UsedFormat: (float, percent or autoscale)
+xosview*\\$1UsedFormat: (percent, scale1000, or scale1024)
 .RS
 This resource tells xosview how to display "used" labels.  The formats work
 as follows:
 
-\fBfloat\fP:
-.RS
-Display the value as a floating point number.
-.RE
 \fBpercent\fP:
 .RS
 Display the value as a percentage of the total.
 .RE
-\fBautoscale\fP:
+\fBscale1000\fP:
 .RS
-Display the absolute value and automatically print the units (K, M, or G) as
-appropriate.
+Display the absolute value and automatically print the units (K, M, G, etc.) as
+appropriate for powers of 1000.
+.RE
+\fBscale1024\fP:
+.RS
+Display the absolute value and automatically print the units (K, M, G, etc.) as
+appropriate for powers of 1024.
+.RE
+float:
+.RS
+Deprecated: Use 'scale1000' instead.
+.RE
+autoscale:
+.RS
+Deprecated: Use 'scale1024' instead.
 .RE
 .RE
 ..

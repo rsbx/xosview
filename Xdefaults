@@ -32,7 +32,7 @@
 *loadPriority:         10
 *loadGraph:            False
 *loadDecay:            False
-*loadUsedFormat:       float
+*loadUsedFormat:       scale1000
 *loadCpuSpeed:         True
 *loadIdleColor:        aquamarine
 *loadColorList:        seagreen orange red
@@ -55,7 +55,7 @@
 *gfxWarnThreshold:  60   ! swapbuffers/s per pipe
 *gfxDecay:          False
 *gfxGraph:          False
-*gfxUsedFormat:     autoscale
+*gfxUsedFormat:     scale1024
 
 ! CPU Meter Resources
 
@@ -97,7 +97,7 @@
 *memPriority:        10
 *memDecay:           False
 *memGraph:           False
-*memUsedFormat:      autoscale
+*memUsedFormat:      scale1024
 
 ! Swap Meter Resources
 
@@ -108,7 +108,7 @@
 *swapPriority:       10
 *swapDecay:          False
 *swapGraph:          False
-*swapUsedFormat:     autoscale
+*swapUsedFormat:     scale1024
 
 
 ! Page Meter Resources
@@ -121,7 +121,7 @@
 *pagePriority:       5
 *pageDecay:          False
 *pageGraph:          False
-*pageUsedFormat:     autoscale
+*pageUsedFormat:     scale1024
 
 
 ! Network Meter Resources
@@ -134,7 +134,7 @@
 *netPriority:        2
 *netDecay:           True
 *netGraph:           True
-*netUsedFormat:      autoscale
+*netUsedFormat:      scale1024
 *netIface:           False
 
 ! Linux-only resources:
@@ -177,7 +177,7 @@
 *irqrateUsedColor:   red
 *irqrateIdleColor:   aquamarine
 *irqratePriority:    1
-*irqrateUsedFormat:  autoscale
+*irqrateUsedFormat:  scale1024
 *irqrateDecay:       True
 *irqrateGraph:       False
 
@@ -215,7 +215,7 @@
 ! *wirelessRange.wlan0.Granularity:  70
 ! *wirelessRange.wlan0.Ratio:        0.75
 *wirelessPriority:                   1
-*wirelessUsedFormat:                 autoscale
+*wirelessUsedFormat:                 scale1024
 *wirelessDecay:                      True
 *wirelessGraph:                      False
 
@@ -229,7 +229,7 @@
 *diskBandwidth:     100000000 ! 100MB/s
 *diskPriority:      10
 *diskDecay:         True
-*diskUsedFormat:    autoscale
+*diskUsedFormat:    scale1024
 *diskGraph:         True
 
 
@@ -249,7 +249,7 @@
 *lmstempHighColor:      red
 *lmstempIdleColor:      aquamarine
 *lmstempPriority:       20
-*lmstempUsedFormat:     autoscale
+*lmstempUsedFormat:     scale1024
 *lmstempHighest:        100
 ! *lmstemp1:            temp
 ! *lmstemp2:            remote_temp
@@ -284,7 +284,7 @@
 *acpitempHighColor:        red
 *acpitempIdleColor:        aquamarine
 *acpitempPriority:         20
-*acpitempUsedFormat:       float
+*acpitempUsedFormat:       scale1000
 *acpitempHighest:          100
 ! *acpitemp1:                CPU
 ! *acpitemp2:                MB
@@ -294,7 +294,7 @@
 *coretempHighColor:        red
 *coretempIdleColor:        aquamarine
 *coretempPriority:         20
-*coretempUsedFormat:       float
+*coretempUsedFormat:       scale1000
 *coretempDisplayType:      separate    ! separate, maximum or average
 ! *coretemp1Package:         0
 
@@ -303,7 +303,7 @@
 *bsdsensorHighColor:      red
 *bsdsensorIdleColor:      aquamarine
 *bsdsensorPriority:       20
-*bsdsensorUsedFormat:     float
+*bsdsensorUsedFormat:     scale1000
 ! NetBSD example
 ! *bsdsensor1:            coretemp0.cur-value
 ! OpenBSD example
