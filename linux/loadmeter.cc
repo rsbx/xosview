@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <strings.h>
+#include "formatnum.h"
 
 //  Prior to the rewrite the displayed scale range was unpredictable making it
 //  impossible to estimate the system load average when usedLabels was not
@@ -271,17 +272,17 @@ void LoadMeter::checkResources( void ){
 // just check /proc/cpuinfo for the speed of cpu
 // (average multi-cpus on different speeds)
 // (yes - i know about devices/system/cpu/cpu*/cpufreq )
-static int getspeedinfo( void ){
+static unsigned long getspeedinfo( void ){
   std::ifstream speedinfo(SPEEDFILENAME);
   std::string line, val;
-  unsigned int total_cpu = 0, ncpus = 0;
+  unsigned long total_cpu = 0, ncpus = 0;
 
   while ( speedinfo.good() ) {
     std::getline(speedinfo, line);
     if ( strncmp(line.c_str(), "cpu MHz", 7) == 0 ) {
       val = line.substr(line.find_last_of(':') + 1);
       XOSDEBUG("SPEED: %s\n", val.c_str());
-      total_cpu += atoi(val.c_str());
+      total_cpu += strtoul(val.c_str(), NULL, 10);
       ncpus++;
     }
   }
@@ -293,18 +294,20 @@ static int getspeedinfo( void ){
 }
 
 
-void LoadMeter::checkevent( void ){
+void LoadMeter::checkevent(void) {
+  char buffer[8];
+
   getloadinfo();
-  if ( do_cpu_speed ) {
-    int cpu_speed = getspeedinfo();
+  if (do_cpu_speed) {
+    unsigned long cpu_speed = getspeedinfo();
 
     if (old_cpu_speed_ != cpu_speed) {
       old_cpu_speed_ = cpu_speed;
       // update the legend:
       std::ostringstream legnd;
-      XOSDEBUG("SPEED: %d\n", cpu_speed);
-      legnd << "PROCS @ " << cpu_speed << " MHz"<< std::ends;
-      legend( legnd.str().c_str() );
+      XOSDEBUG("SPEED: %ul\n", cpu_speed);
+      legnd << "PROCS @ " << FormatNum4(buffer, 8, FormatNum_Scale_1000, 1000000*cpu_speed) << "Hz" << std::ends;
+      legend(legnd.str().c_str());
       drawlegend();
     }
   }

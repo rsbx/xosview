@@ -29,7 +29,7 @@ protected:
   void getloadinfo( void );
 
 private:
-   int do_cpu_speed, old_cpu_speed_;
+   unsigned long do_cpu_speed, old_cpu_speed_;
 
    double B;
    double l2_B;
