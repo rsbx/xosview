@@ -35,6 +35,8 @@ public:
   void clear( int x, int y, int width, int height )
     { XClearArea( display_, window_, x, y, width, height, False ); }
   unsigned long allocColor( const char *name );
+  unsigned long allocColor(XColor *color);
+  bool parseColor(const char *spec, XColor *color);
   void setForeground( unsigned long pixelvalue )
     { XSetForeground( display_, gc_, pixelvalue ); }
   void setBackground( unsigned long pixelvalue )

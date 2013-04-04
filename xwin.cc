@@ -354,6 +354,21 @@ unsigned long XWin::allocColor( const char *name ){
 }
 //-----------------------------------------------------------------------------
 
+unsigned long XWin::allocColor(XColor *color) {
+  XColor screen_in_out = *color;
+
+  if (!XAllocColor(display_, colormap(), &screen_in_out))
+    std::cerr << "XWin::allocColor(XColor *) : failed to alloc" << std::endl;
+
+  return screen_in_out.pixel;
+}
+//-----------------------------------------------------------------------------
+
+bool XWin::parseColor(const char *spec, XColor *color) {
+  return !!XParseColor(display_, colormap(), spec, color);
+}
+//-----------------------------------------------------------------------------
+
 void XWin::deleteEvent( XEvent &event ){
   if ( (event.xclient.message_type == wm_ ) &&
        ((unsigned)event.xclient.data.l[0] == wmdelete_) )
